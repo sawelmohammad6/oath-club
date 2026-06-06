@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="bn" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oath Club - একতা, নেতৃত্ব ও সমাজসেবা</title>
+    <meta name="description" content="Oath Club - একটি কমিউনিটি ভিত্তিক সংগঠন যা সমাজকল্যাণ, যুব উন্নয়ন ও শিক্ষা সহায়তার জন্য নিবেদিত।">
+
+    <!-- Inter (English) + Hind Siliguri (Bengali) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0fdf4', 100: '#dcfce7', 200: '#bbf7d0',
+                            300: '#86efac', 400: '#4ade80', 500: '#22c55e',
+                            600: '#16a34a', 700: '#15803d', 800: '#166534',
+                            900: '#14532d'
+                        }
+                    },
+                    fontFamily: {
+                        bengali: ['Hind Siliguri', 'Noto Sans Bengali', 'sans-serif'],
+                        english: ['Inter', 'Segoe UI', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Lightbox2 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css">
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Config (editable data) -->
+    <script src="js/config.js"></script>
+</head>
+<body class="font-bengali bg-gray-50 text-gray-800">
+
+    <!-- ==============================
+         NAVBAR
+    ============================== -->
+    <nav id="navbar" class="fixed w-full z-50 bg-white/95 backdrop-blur-sm transition-all duration-300 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 lg:h-20">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-3">
+                    <img src="assets/logo.png" alt="Oath Club" class="h-10 w-10 object-contain" onerror="this.style.display='none'">
+                    <span class="text-2xl font-bold text-primary-700 site-name">Oath Club</span>
+                </a>
+                <!-- Desktop Nav -->
+                <div class="hidden md:flex items-center gap-1 lg:gap-2">
+                    <a href="#" class="nav-link px-3 py-2 text-sm font-medium text-gray-600 hover:text-primary-600 active">হোম</a>
+                    <a href="#about" class="nav-link px-3 py-2 text-sm font-medium text-gray-600 hover:text-primary-600">আমাদের সম্পর্কে</a>
+                    <a href="#activities" class="nav-link px-3 py-2 text-sm font-medium text-gray-600 hover:text-primary-600">কার্যক্রম</a>
+                    <a href="#members" class="nav-link px-3 py-2 text-sm font-medium text-gray-600 hover:text-primary-600">সদস্য</a>
+                    <a href="#committee" class="nav-link px-3 py-2 text-sm font-medium text-gray-600 hover:text-primary-600">কমিটি</a>
+                    <a href="#gallery" class="nav-link px-3 py-2 text-sm font-medium text-gray-600 hover:text-primary-600">গ্যালারি</a>
+                    <a href="#contact" class="nav-link px-3 py-2 text-sm font-medium text-gray-600 hover:text-primary-600">যোগাযোগ</a>
+                    <!-- Admin Login (shown when logged out) -->
+                    <button onclick="openAdminLoginModal()" class="admin-login-btn ml-2 px-4 py-2 border-2 border-primary-500 text-primary-600 hover:bg-primary-50 rounded-full text-sm font-semibold transition">
+                        <i class="fas fa-lock mr-1"></i>লগইন
+                    </button>
+                    <!-- Admin Dashboard (shown when logged in) -->
+                    <a href="admin.html" class="admin-dashboard-btn hidden ml-2 px-4 py-2 bg-primary-600 text-white rounded-full text-sm font-semibold transition shadow hover:shadow-lg">
+                        <i class="fas fa-tachometer-alt mr-1"></i>ড্যাশবোর্ড
+                    </a>
+                    <button onclick="adminLogout()" class="admin-logout-btn hidden ml-2 px-4 py-2 border-2 border-red-400 text-red-500 hover:bg-red-50 rounded-full text-sm font-semibold transition">
+                        <i class="fas fa-sign-out-alt mr-1"></i>লগআউট
+                    </button>
+                    <a href="#join" class="ml-3 px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-full text-sm font-semibold transition shadow-md hover:shadow-lg">
+                        <i class="fas fa-user-plus mr-1.5"></i>জয়েন করুন
+                    </a>
+                </div>
+                <!-- Mobile Toggle -->
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition" aria-label="Menu">
+                    <i class="fas fa-bars text-2xl text-gray-600"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="md:hidden hidden bg-white border-t border-gray-100">
+            <div class="px-4 py-3 space-y-1">
+                <a href="#" onclick="toggleMobileMenu()" class="block px-4 py-2.5 rounded-lg text-gray-600 hover:bg-primary-50 hover:text-primary-600 font-medium">হোম</a>
+                <a href="#about" onclick="toggleMobileMenu()" class="block px-4 py-2.5 rounded-lg text-gray-600 hover:bg-primary-50 hover:text-primary-600 font-medium">আমাদের সম্পর্কে</a>
+                <a href="#activities" onclick="toggleMobileMenu()" class="block px-4 py-2.5 rounded-lg text-gray-600 hover:bg-primary-50 hover:text-primary-600 font-medium">কার্যক্রম</a>
+                <a href="#members" onclick="toggleMobileMenu()" class="block px-4 py-2.5 rounded-lg text-gray-600 hover:bg-primary-50 hover:text-primary-600 font-medium">সদস্য</a>
+                <a href="#committee" onclick="toggleMobileMenu()" class="block px-4 py-2.5 rounded-lg text-gray-600 hover:bg-primary-50 hover:text-primary-600 font-medium">কমিটি</a>
+                <a href="#gallery" onclick="toggleMobileMenu()" class="block px-4 py-2.5 rounded-lg text-gray-600 hover:bg-primary-50 hover:text-primary-600 font-medium">গ্যালারি</a>
+                <a href="#contact" onclick="toggleMobileMenu()" class="block px-4 py-2.5 rounded-lg text-gray-600 hover:bg-primary-50 hover:text-primary-600 font-medium">যোগাযোগ</a>
+                <!-- Mobile login/logout -->
+                <button onclick="openAdminLoginModal();toggleMobileMenu()" class="admin-login-btn block w-full mt-2 px-4 py-2.5 border-2 border-primary-500 text-primary-600 rounded-lg text-center font-semibold hover:bg-primary-50">
+                    <i class="fas fa-lock mr-1"></i>লগইন
+                </button>
+                <a href="admin.html" class="admin-dashboard-btn hidden block w-full mt-2 px-4 py-2.5 bg-primary-600 text-white rounded-lg text-center font-semibold">
+                    <i class="fas fa-tachometer-alt mr-1"></i>ড্যাশবোর্ড
+                </a>
+                <button onclick="adminLogout();toggleMobileMenu()" class="admin-logout-btn hidden block w-full mt-2 px-4 py-2.5 border-2 border-red-400 text-red-500 rounded-lg text-center font-semibold hover:bg-red-50">
+                    <i class="fas fa-sign-out-alt mr-1"></i>লগআউট
+                </button>
+                <a href="#join" onclick="toggleMobileMenu()" class="block mt-2 px-4 py-2.5 bg-primary-600 text-white rounded-lg text-center font-semibold">
+                    <i class="fas fa-user-plus mr-1.5"></i>জয়েন করুন
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==============================
+         HERO CAROUSEL
+    ============================== -->
+    <section class="relative w-full h-[80vh] md:h-[85vh] lg:h-[90vh] overflow-hidden" id="home">
+        <div id="heroSlider" class="relative w-full h-full"></div>
+        <div class="hero-overlay absolute inset-0 z-10 flex items-center">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+                <div class="max-w-2xl" data-aos="fade-right">
+                    <h1 class="text-4xl md:text-5xl lg:text-7xl font-extrabold text-white leading-tight mb-4">
+                        Oath <span class="text-primary-400">Club</span>
+                    </h1>
+                    <p class="text-lg md:text-xl lg:text-2xl text-white/90 mb-8 font-light hero-tagline">একতা, নেতৃত্ব ও সমাজসেবায় আমাদের অঙ্গীকার</p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#join" class="px-8 py-3.5 bg-primary-600 hover:bg-primary-700 text-white rounded-full font-semibold transition shadow-lg hover:shadow-xl flex items-center gap-2">
+                            <i class="fas fa-user-plus"></i> সদস্য হোন
+                        </a>
+                        <a href="#about" class="px-8 py-3.5 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white rounded-full font-semibold transition border border-white/40 flex items-center gap-2">
+                            <i class="fas fa-info-circle"></i> আরও জানুন
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Carousel Controls -->
+        <div id="heroDots" class="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 z-20 flex gap-2.5"></div>
+    </section>
+
+    <!-- ==============================
+         ABOUT + VISION + MISSION
+    ============================== -->
+    <section id="about" class="section-padding bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- About -->
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="inline-block px-4 py-1.5 bg-primary-100 text-primary-700 rounded-full text-sm font-semibold mb-4">আমাদের সম্পর্কে</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Oath Club</h2>
+                <p id="aboutText" class="text-gray-600 max-w-3xl mx-auto leading-relaxed text-lg"></p>
+            </div>
+            <!-- Vision & Mission -->
+            <div class="grid md:grid-cols-2 gap-8 lg:gap-12">
+                <div class="bg-primary-50 rounded-2xl p-8 lg:p-10 border border-primary-100" data-aos="fade-right">
+                    <div class="w-14 h-14 bg-primary-600 rounded-xl flex items-center justify-center mb-5">
+                        <i class="fas fa-eye text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-3">আমাদের লক্ষ্য</h3>
+                    <p id="visionText" class="text-gray-600 leading-relaxed"></p>
+                </div>
+                <div class="bg-primary-50 rounded-2xl p-8 lg:p-10 border border-primary-100" data-aos="fade-left">
+                    <div class="w-14 h-14 bg-primary-600 rounded-xl flex items-center justify-center mb-5">
+                        <i class="fas fa-bullseye text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-3">আমাদের উদ্দেশ্য</h3>
+                    <p id="missionText" class="text-gray-600 leading-relaxed"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==============================
+         WHY JOIN
+    ============================== -->
+    <section class="section-padding bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12" data-aos="fade-up">
+                <span class="inline-block px-4 py-1.5 bg-primary-100 text-primary-700 rounded-full text-sm font-semibold mb-4">কেন জয়েন করবেন?</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">সদস্য হওয়ার সুবিধা</h2>
+            </div>
+            <div id="whyJoinGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6"></div>
+        </div>
+    </section>
+
+    <!-- ==============================
+         ACTIVITIES
+    ============================== -->
+    <section id="activities" class="section-padding bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12" data-aos="fade-up">
+                <span class="inline-block px-4 py-1.5 bg-primary-100 text-primary-700 rounded-full text-sm font-semibold mb-4">আমাদের কার্যক্রম</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">আমরা যা করি</h2>
+            </div>
+            <div id="activitiesGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"></div>
+        </div>
+    </section>
+
+    <!-- ==============================
+         MEMBERS SECTION
+    ============================== -->
+    <section id="members" class="section-padding bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12" data-aos="fade-up">
+                <span class="inline-block px-4 py-1.5 bg-primary-100 text-primary-700 rounded-full text-sm font-semibold mb-4">আমাদের সদস্য</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">অনুমোদিত সদস্যবৃন্দ</h2>
+                <p class="text-gray-500">নিচের তালিকায় শুধুমাত্র অনুমোদিত সদস্যদের তথ্য প্রদর্শিত হয়</p>
+            </div>
+            <!-- Search -->
+            <div class="max-w-md mx-auto mb-8" data-aos="fade-up">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" id="memberSearch" oninput="filterMembers()" placeholder="সদস্যের নাম খুঁজুন..." class="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary-500 bg-white shadow-sm">
+                </div>
+            </div>
+            <!-- Members Grid (populated by JS) -->
+            <div id="membersContainer" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div class="col-span-full text-center py-16">
+                    <i class="fas fa-spinner fa-spin text-4xl text-primary-500"></i>
+                    <p class="mt-4 text-gray-500">সদস্য তথ্য লোড হচ্ছে...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==============================
+         COMMITTEE SECTION
+    ============================== -->
+    <section id="committee" class="section-padding bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12" data-aos="fade-up">
+                <span class="inline-block px-4 py-1.5 bg-primary-100 text-primary-700 rounded-full text-sm font-semibold mb-4">কমিটি</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">আমাদের কমিটি</h2>
+                <p class="text-gray-500 mt-2">Oath Club-এর নেতৃত্ব ও পরিচালনা কমিটি</p>
+            </div>
+            <div id="committeeContainer" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div class="col-span-full text-center py-16">
+                    <i class="fas fa-spinner fa-spin text-4xl text-primary-500"></i>
+                    <p class="mt-4 text-gray-500">কমিটি তথ্য লোড হচ্ছে...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==============================
+         GALLERY
+    ============================== -->
+    <section id="gallery" class="section-padding bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12" data-aos="fade-up">
+                <span class="inline-block px-4 py-1.5 bg-primary-100 text-primary-700 rounded-full text-sm font-semibold mb-4">গ্যালারি</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">আমাদের মুহূর্তগুলি</h2>
+            </div>
+            <div id="galleryContainer" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+        </div>
+    </section>
+
+    <!-- ==============================
+         JOIN FORM
+    ============================== -->
+    <section id="join" class="section-padding bg-gradient-to-br from-primary-700 to-primary-500 text-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-10" data-aos="fade-up">
+                <span class="inline-block px-4 py-1.5 bg-white/20 rounded-full text-sm font-semibold mb-4 backdrop-blur-sm">সদস্য registration</span>
+                <h2 class="text-3xl md:text-4xl font-bold mb-3">Oath Club-এ জয়েন করুন</h2>
+                <p class="text-white/80">ফর্মটি পূরণ করে সদস্য হওয়ার জন্য আবেদন করুন। অনুমোদিত হলে আপনাকে সদস্য তালিকায় যুক্ত করা হবে।</p>
+            </div>
+
+            <div class="bg-white/10 backdrop-blur-md rounded-3xl p-6 md:p-10 border border-white/20" data-aos="fade-up">
+                <!-- Fee Info -->
+                <div class="bg-white/15 rounded-xl p-4 mb-6 text-center text-sm">
+                    <i class="fas fa-info-circle mr-1.5"></i>
+                    সদস্য ফি: <strong><span id="membershipFee"></span> টাকা</strong> | বিকাশ: <strong><span id="bkashNumber"></span></strong> | নগদ: <strong><span id="nagadNumber"></span></strong>
+                </div>
+
+                <form id="joinForm" class="grid md:grid-cols-2 gap-5">
+                    <!-- Full Name -->
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-semibold mb-1.5 text-white/90"><i class="fas fa-user mr-1"></i> পূর্ণ নাম <span class="text-red-300">*</span></label>
+                        <input type="text" id="jFullName" required class="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-800 placeholder-gray-400 border-0 focus:ring-2 focus:ring-primary-300 transition" placeholder="আপনার পূর্ণ নাম লিখুন">
+                    </div>
+                    <!-- Father Name -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-1.5 text-white/90"><i class="fas fa-male mr-1"></i> পিতার নাম</label>
+                        <input type="text" id="jFatherName" class="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-800 placeholder-gray-400 border-0 focus:ring-2 focus:ring-primary-300 transition" placeholder="পিতার নাম">
+                    </div>
+                    <!-- Mother Name -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-1.5 text-white/90"><i class="fas fa-female mr-1"></i> মাতার নাম</label>
+                        <input type="text" id="jMotherName" class="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-800 placeholder-gray-400 border-0 focus:ring-2 focus:ring-primary-300 transition" placeholder="মাতার নাম">
+                    </div>
+                    <!-- DOB -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-1.5 text-white/90"><i class="fas fa-calendar mr-1"></i> জন্ম তারিখ <span class="text-red-300">*</span></label>
+                        <input type="date" id="jDob" required class="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-800 border-0 focus:ring-2 focus:ring-primary-300 transition">
+                    </div>
+                    <!-- Phone -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-1.5 text-white/90"><i class="fas fa-phone mr-1"></i> মোবাইল নম্বর <span class="text-red-300">*</span></label>
+                        <input type="tel" id="jPhone" required class="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-800 placeholder-gray-400 border-0 focus:ring-2 focus:ring-primary-300 transition" placeholder="০১৭XX-XXXXXX">
+                    </div>
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-1.5 text-white/90"><i class="fas fa-envelope mr-1"></i> ইমেইল</label>
+                        <input type="email" id="jEmail" class="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-800 placeholder-gray-400 border-0 focus:ring-2 focus:ring-primary-300 transition" placeholder="email@example.com">
+                    </div>
+                    <!-- Occupation -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-1.5 text-white/90"><i class="fas fa-briefcase mr-1"></i> পেশা</label>
+                        <input type="text" id="jOccupation" class="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-800 placeholder-gray-400 border-0 focus:ring-2 focus:ring-primary-300 transition" placeholder="আপনার পেশা">
+                    </div>
+                    <!-- Blood Group -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-1.5 text-white/90"><i class="fas fa-tint mr-1"></i> রক্তের গ্রুপ</label>
+                        <select id="jBloodGroup" class="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-800 border-0 focus:ring-2 focus:ring-primary-300 transition">
+                            <option value="">নির্বাচন করুন</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
+                    <!-- Address -->
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-semibold mb-1.5 text-white/90"><i class="fas fa-map-marker-alt mr-1"></i> ঠিকানা</label>
+                        <input type="text" id="jAddress" class="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-800 placeholder-gray-400 border-0 focus:ring-2 focus:ring-primary-300 transition" placeholder="বর্তমান ঠিকানা">
+                    </div>
+                    <!-- Transaction ID -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-1.5 text-white/90"><i class="fas fa-receipt mr-1"></i> লেনদেন আইডি (TrxID) <span class="text-red-300">*</span></label>
+                        <input type="text" id="jTransactionId" required class="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-800 placeholder-gray-400 border-0 focus:ring-2 focus:ring-primary-300 transition" placeholder="বিকাশ/নগদ TrxID">
+                    </div>
+                    <!-- Photo Upload -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-1.5 text-white/90"><i class="fas fa-camera mr-1"></i> ছবি <span class="text-red-300">*</span></label>
+                        <div class="relative">
+                            <input type="file" id="jPhoto" accept="image/*" required class="w-full px-4 py-3 rounded-xl bg-white/90 text-gray-700 border-0 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary-600 file:text-white file:font-semibold file:cursor-pointer hover:file:bg-primary-700 transition text-sm">
+                        </div>
+                    </div>
+                    <!-- Submit -->
+                    <div class="md:col-span-2 mt-2">
+                        <button type="submit" class="w-full px-8 py-4 bg-white text-primary-700 hover:bg-primary-50 rounded-xl font-bold text-lg transition shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+                            <i class="fas fa-paper-plane"></i> আবেদন জমা দিন
+                        </button>
+                    </div>
+                    <div class="md:col-span-2 text-center text-xs text-white/60">
+                        <i class="fas fa-shield-alt mr-1"></i> আপনার তথ্য নিরাপদ রাখা হবে এবং শুধুমাত্র ক্লাবের অফিসিয়াল কাজে ব্যবহৃত হবে।
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==============================
+         CONTACT
+    ============================== -->
+    <section id="contact" class="section-padding bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12" data-aos="fade-up">
+                <span class="inline-block px-4 py-1.5 bg-primary-100 text-primary-700 rounded-full text-sm font-semibold mb-4">যোগাযোগ</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">আমাদের সাথে যোগাযোগ করুন</h2>
+            </div>
+            <div class="grid md:grid-cols-2 gap-10 lg:gap-16">
+                <!-- Contact Info -->
+                <div class="space-y-6" data-aos="fade-right">
+                    <div class="flex items-start gap-4 p-4 rounded-xl bg-gray-50">
+                        <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center flex-shrink-0"><i class="fas fa-phone text-primary-600 text-xl"></i></div>
+                        <div><h4 class="font-semibold text-gray-800">ফোন</h4><p id="contactPhone" class="text-gray-500"></p></div>
+                    </div>
+                    <div class="flex items-start gap-4 p-4 rounded-xl bg-gray-50">
+                        <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center flex-shrink-0"><i class="fas fa-envelope text-primary-600 text-xl"></i></div>
+                        <div><h4 class="font-semibold text-gray-800">ইমেইল</h4><p id="contactEmailContent" class="text-gray-500"></p></div>
+                    </div>
+                    <div class="flex items-start gap-4 p-4 rounded-xl bg-gray-50">
+                        <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center flex-shrink-0"><i class="fab fa-facebook text-primary-600 text-xl"></i></div>
+                        <div><h4 class="font-semibold text-gray-800">Facebook</h4><a id="contactFacebook" href="#" target="_blank" class="text-primary-600 hover:underline">Facebook Page</a></div>
+                    </div>
+                    <div class="flex items-start gap-4 p-4 rounded-xl bg-gray-50">
+                        <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center flex-shrink-0"><i class="fas fa-map-marker-alt text-primary-600 text-xl"></i></div>
+                        <div><h4 class="font-semibold text-gray-800">ঠিকানা</h4><p id="contactAddress" class="text-gray-500"></p></div>
+                    </div>
+                </div>
+                <!-- Contact Form -->
+                <div data-aos="fade-left">
+                    <form id="contactForm" class="space-y-5">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">আপনার নাম <span class="text-red-500">*</span></label>
+                            <input type="text" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary-500 transition" placeholder="আপনার নাম">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">ইমেইল</label>
+                            <input type="email" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary-500 transition" placeholder="email@example.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">ফোন</label>
+                            <input type="tel" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary-500 transition" placeholder="০১৭XX-XXXXXX">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">বার্তা <span class="text-red-500">*</span></label>
+                            <textarea rows="4" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary-500 transition resize-none" placeholder="আপনার বার্তা লিখুন..."></textarea>
+                        </div>
+                        <button type="submit" class="w-full px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-semibold transition shadow-lg flex items-center justify-center gap-2">
+                            <i class="fas fa-paper-plane"></i> বার্তা পাঠান
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==============================
+         FOOTER
+    ============================== -->
+    <footer class="bg-gray-900 text-gray-400">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Brand -->
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <img src="assets/logo.png" alt="Oath Club" class="h-10 w-10 object-contain" onerror="this.style.display='none'">
+                        <span class="text-2xl font-bold text-white site-name">Oath Club</span>
+                    </div>
+                    <p class="text-sm leading-relaxed">একতা, নেতৃত্ব ও সমাজসেবায় আমাদের অঙ্গীকার। আমরা বিশ্বাস করি একসঙ্গে কাজ করে আমরা আমাদের সমাজে ইতিবাচক পরিবর্তন আনতে পারি।</p>
+                </div>
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-white font-bold text-lg mb-4">দ্রুত লিংক</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#about" class="hover:text-primary-400 transition">আমাদের সম্পর্কে</a></li>
+                        <li><a href="#activities" class="hover:text-primary-400 transition">কার্যক্রম</a></li>
+                        <li><a href="#members" class="hover:text-primary-400 transition">সদস্য</a></li>
+                        <li><a href="#committee" class="hover:text-primary-400 transition">কমিটি</a></li>
+                        <li><a href="#gallery" class="hover:text-primary-400 transition">গ্যালারি</a></li>
+                        <li><a href="#join" class="hover:text-primary-400 transition">সদস্য হোন</a></li>
+                        <li><a href="#contact" class="hover:text-primary-400 transition">যোগাযোগ</a></li>
+                    </ul>
+                </div>
+                <!-- Contact -->
+                <div>
+                    <h4 class="text-white font-bold text-lg mb-4">যোগাযোগ</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-3"><i class="fas fa-phone mt-1 text-primary-400"></i><span id="footerPhone" class="contact-phone"></span></li>
+                        <li class="flex items-start gap-3"><i class="fas fa-envelope mt-1 text-primary-400"></i><span id="footerEmail" class="contact-email"></span></li>
+                        <li class="flex items-start gap-3"><i class="fas fa-map-marker-alt mt-1 text-primary-400"></i><span id="footerAddress" class="contact-address"></span></li>
+                    </ul>
+                    <div class="flex gap-3 mt-6">
+                        <a href="https://facebook.com/oathclub" target="_blank" class="w-10 h-10 bg-gray-800 hover:bg-primary-600 rounded-xl flex items-center justify-center transition"><i class="fab fa-facebook-f text-white"></i></a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 hover:bg-primary-600 rounded-xl flex items-center justify-center transition"><i class="fab fa-youtube text-white"></i></a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 hover:bg-primary-600 rounded-xl flex items-center justify-center transition"><i class="fab fa-instagram text-white"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-10 pt-8 text-center text-xs">
+                &copy; <span id="footerYear"></span> <span class="site-name">Oath Club</span>. All rights reserved.
+                <span class="mx-2">|</span>
+                <a href="admin.html" class="text-gray-500 hover:text-primary-400 transition" target="_blank"><i class="fas fa-shield-alt mr-1"></i>Admin</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==============================
+         ADMIN LOGIN MODAL (Glassmorphism)
+    ============================== -->
+    <div id="adminLoginModal" class="hidden fixed inset-0 z-[100] admin-modal-overlay flex items-center justify-center p-4">
+        <div onclick="closeAdminLoginModal()" class="absolute inset-0"></div>
+        <div class="glass-modal relative w-full max-w-md rounded-2xl p-8 md:p-10">
+            <!-- Close -->
+            <button onclick="closeAdminLoginModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 transition">
+                <i class="fas fa-times"></i>
+            </button>
+            <!-- Logo -->
+            <div class="text-center mb-6">
+                <img src="assets/logo.png" alt="Oath Club" class="h-16 w-16 mx-auto object-contain mb-3" onerror="this.style.display='none'">
+                <h2 class="text-2xl font-bold text-gray-800">Admin Panel</h2>
+                <p class="text-gray-500 text-sm mt-1">Oath Club পরিচালনা প্যানেল</p>
+            </div>
+            <!-- Login Form -->
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5"><i class="fas fa-user text-gray-400 mr-1.5"></i>Username</label>
+                    <input type="text" id="adminModalUser" value="admin" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition text-gray-800" placeholder="Enter username">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5"><i class="fas fa-lock text-gray-400 mr-1.5"></i>Password</label>
+                    <div class="relative">
+                        <input type="password" id="adminModalPass" value="admin123" class="w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition text-gray-800" placeholder="Enter password" onkeydown="if(event.key==='Enter') handleAdminLogin()">
+                        <button type="button" onclick="toggleAdminPasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-eye toggle-password-icon"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- Remember Me -->
+                <div class="flex items-center gap-2 text-sm text-gray-600">
+                    <input type="checkbox" id="adminRememberMe" checked class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+                    <label for="adminRememberMe">Remember Me</label>
+                </div>
+                <button onclick="handleAdminLogin()" class="w-full py-3.5 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 text-white rounded-xl font-bold text-lg transition shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+                    <i class="fas fa-lock"></i>
+                    <span>লগইন</span>
+                </button>
+            </div>
+            <p class="text-center text-xs text-gray-400 mt-4">Default: <span class="font-mono">admin</span> / <span class="font-mono">admin123</span></p>
+        </div>
+    </div>
+
+    <!-- Lightbox2 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox-plus-jquery.min.js"></script>
+
+    <!-- AOS-like scroll handler -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('aos-animate');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('[data-aos]').forEach(el => observer.observe(el));
+        });
+    </script>
+
+    <!-- Auth JS (session management, login modal) -->
+    <script src="js/auth.js"></script>
+
+    <!-- Main App JS -->
+    <script src="js/app.js"></script>
+</body>
+</html>

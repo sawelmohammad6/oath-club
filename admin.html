@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="bn" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Oath Club</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 50: '#f0fdf4', 100: '#dcfce7', 200: '#bbf7d0', 300: '#86efac', 400: '#4ade80', 500: '#22c55e', 600: '#16a34a', 700: '#15803d', 800: '#166534', 900: '#14532d' },
+                        sidebar: { from: '#0f172a', to: '#1e293b' }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="js/config.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body { font-family: 'Hind Siliguri', 'Inter', sans-serif; }
+        .page { display: none; }
+        .page.active { display: block; animation: fadeSlide 0.3s ease; }
+        @keyframes fadeSlide { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .sidebar-link { @apply flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-200 cursor-pointer; }
+        .sidebar-link.active { @apply bg-primary-600/20 text-primary-400 border-l-4 border-primary-500; }
+        .sidebar-link i { @apply w-5 text-center; }
+        .stat-card { @apply rounded-2xl p-6 text-white transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl cursor-default; }
+        .btn-primary { @apply px-5 py-2.5 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 text-white rounded-xl transition-all duration-200 font-semibold shadow-lg hover:shadow-xl; }
+        .btn-danger { @apply px-5 py-2.5 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white rounded-xl transition-all duration-200 font-semibold shadow-lg hover:shadow-xl; }
+        .btn-sm { @apply px-3 py-1.5 text-sm; }
+        table.admin-table { @apply w-full text-sm; }
+        table.admin-table th { @apply text-left px-4 py-3.5 bg-gray-50 font-semibold text-gray-600 text-xs uppercase tracking-wider; }
+        table.admin-table td { @apply px-4 py-3.5 border-t border-gray-100; }
+        table.admin-table tr:hover td { @apply bg-primary-50/50; }
+        .admin-card { @apply bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden; }
+        .form-input { @apply w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition bg-white; }
+        .skeleton-row { height: 48px; background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; margin-bottom: 8px; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .badge { @apply inline-flex px-2.5 py-1 rounded-full text-xs font-semibold; }
+        .badge-pending { @apply bg-yellow-100 text-yellow-700; }
+        .badge-approved { @apply bg-green-100 text-green-700; }
+        .badge-rejected { @apply bg-red-100 text-red-700; }
+        .mobile-sidebar { transition: transform 0.3s ease; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- ===== LOADING OVERLAY ===== -->
+    <div id="appLoading" class="fixed inset-0 z-[100] bg-white flex items-center justify-center">
+        <div class="text-center">
+            <div class="w-16 h-16 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <p class="text-gray-500 font-medium">Loading Dashboard...</p>
+        </div>
+    </div>
+
+    <div id="appContent" class="hidden min-h-screen flex">
+
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="hidden lg:flex lg:flex-col w-72 bg-gradient-to-b from-sidebar-from to-sidebar-to min-h-screen fixed left-0 top-0 z-30 admin-sidebar overflow-y-auto">
+            <div class="p-6 border-b border-white/10">
+                <div class="flex items-center gap-3">
+                    <img src="assets/logo.png" alt="Oath Club" class="h-10 w-10 object-contain rounded-lg bg-white/10 p-1" onerror="this.style.display='none'">
+                    <div>
+                        <h2 class="text-white font-bold text-lg site-name">Oath Club</h2>
+                        <p class="text-gray-400 text-xs">Admin Panel</p>
+                    </div>
+                </div>
+            </div>
+            <nav class="p-4 space-y-1 flex-1">
+                <div class="sidebar-link active" onclick="showPage('dashboard')" data-page="dashboard"><i class="fas fa-chart-pie"></i><span>Dashboard</span></div>
+                <div class="sidebar-link" onclick="showPage('applications')" data-page="applications"><i class="fas fa-file-invoice"></i><span>Applications</span></div>
+                <div class="sidebar-link" onclick="showPage('members')" data-page="members"><i class="fas fa-users"></i><span>Members</span></div>
+                <div class="sidebar-link" onclick="showPage('committee')" data-page="committee"><i class="fas fa-user-tie"></i><span>Committee</span></div>
+                <div class="sidebar-link" onclick="showPage('gallery')" data-page="gallery"><i class="fas fa-images"></i><span>Gallery</span></div>
+                <div class="sidebar-link" onclick="showPage('settings')" data-page="settings"><i class="fas fa-cog"></i><span>Website Settings</span></div>
+                <div class="sidebar-link" onclick="showPage('contact')" data-page="contact"><i class="fas fa-address-card"></i><span>Contact Settings</span></div>
+            </nav>
+            <div class="p-4 border-t border-white/10">
+                <a href="index.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer">
+                    <i class="fas fa-globe w-5"></i><span>View Website</span>
+                </a>
+                <div onclick="handleLogout()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-900/20 transition-all cursor-pointer mt-1">
+                    <i class="fas fa-sign-out-alt w-5"></i><span>Logout</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ===== MOBILE HEADER ===== -->
+        <div class="lg:pl-72 w-full">
+            <div class="lg:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-0 z-20">
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleMobileSidebar()" class="text-gray-600 text-xl"><i class="fas fa-bars"></i></button>
+                    <span class="font-bold text-gray-800 site-name">Oath Club</span>
+                </div>
+                <span class="text-xs text-gray-400">Admin</span>
+            </div>
+
+            <!-- ===== MOBILE SIDEBAR OVERLAY ===== -->
+            <div id="mobileSidebarOverlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" onclick="toggleMobileSidebar()"></div>
+            <div id="mobileSidebar" class="fixed top-0 left-0 h-full w-72 bg-gradient-to-b from-sidebar-from to-sidebar-to z-50 transform -translate-x-full transition-transform duration-300 lg:hidden overflow-y-auto">
+                <div class="p-6 border-b border-white/10 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <img src="assets/logo.png" alt="" class="h-8 w-8 object-contain rounded" onerror="this.style.display='none'">
+                        <span class="text-white font-bold site-name">Oath Club</span>
+                    </div>
+                    <button onclick="toggleMobileSidebar()" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
+                </div>
+                <nav class="p-4 space-y-1">
+                    <div class="sidebar-link active" onclick="showPage('dashboard');toggleMobileSidebar()" data-page="dashboard"><i class="fas fa-chart-pie"></i><span>Dashboard</span></div>
+                    <div class="sidebar-link" onclick="showPage('applications');toggleMobileSidebar()" data-page="applications"><i class="fas fa-file-invoice"></i><span>Applications</span></div>
+                    <div class="sidebar-link" onclick="showPage('members');toggleMobileSidebar()" data-page="members"><i class="fas fa-users"></i><span>Members</span></div>
+                    <div class="sidebar-link" onclick="showPage('committee');toggleMobileSidebar()" data-page="committee"><i class="fas fa-user-tie"></i><span>Committee</span></div>
+                    <div class="sidebar-link" onclick="showPage('gallery');toggleMobileSidebar()" data-page="gallery"><i class="fas fa-images"></i><span>Gallery</span></div>
+                    <div class="sidebar-link" onclick="showPage('settings');toggleMobileSidebar()" data-page="settings"><i class="fas fa-cog"></i><span>Website Settings</span></div>
+                    <div class="sidebar-link" onclick="showPage('contact');toggleMobileSidebar()" data-page="contact"><i class="fas fa-address-card"></i><span>Contact Settings</span></div>
+                </nav>
+                <div class="p-4 border-t border-white/10">
+                    <a href="index.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer">
+                        <i class="fas fa-globe w-5"></i><span>View Website</span>
+                    </a>
+                    <div onclick="handleLogout()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-900/20 transition-all cursor-pointer mt-1">
+                        <i class="fas fa-sign-out-alt w-5"></i><span>Logout</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== CONTENT AREA ===== -->
+            <div class="p-4 md:p-6 lg:p-8">
+
+                <!-- DASHBOARD -->
+                <div id="page-dashboard" class="page active">
+                    <div class="flex items-center justify-between mb-8">
+                        <div>
+                            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Dashboard</h1>
+                            <p class="text-gray-500 text-sm mt-1">Oath Club management overview</p>
+                        </div>
+                        <span class="text-xs text-gray-400 bg-gray-100 px-3 py-1.5 rounded-full" id="dashboardDate"></span>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+                        <div class="stat-card bg-gradient-to-br from-blue-600 to-blue-700 shadow-blue-200">
+                            <div class="flex items-center justify-between mb-4"><i class="fas fa-file-invoice text-3xl opacity-50"></i><span class="text-xs opacity-70 bg-white/20 px-2 py-1 rounded-full">Total</span></div>
+                            <div class="text-3xl md:text-4xl font-bold stat-counter" id="statTotalApplications">0</div>
+                            <div class="text-sm opacity-80 mt-1">Applications</div>
+                        </div>
+                        <div class="stat-card bg-gradient-to-br from-yellow-500 to-yellow-600 shadow-yellow-200">
+                            <div class="flex items-center justify-between mb-4"><i class="fas fa-clock text-3xl opacity-50"></i><span class="text-xs opacity-70 bg-white/20 px-2 py-1 rounded-full">Pending</span></div>
+                            <div class="text-3xl md:text-4xl font-bold stat-counter" id="statPendingApplications">0</div>
+                            <div class="text-sm opacity-80 mt-1">Pending</div>
+                        </div>
+                        <div class="stat-card bg-gradient-to-br from-green-600 to-green-700 shadow-green-200">
+                            <div class="flex items-center justify-between mb-4"><i class="fas fa-check-circle text-3xl opacity-50"></i><span class="text-xs opacity-70 bg-white/20 px-2 py-1 rounded-full">Approved</span></div>
+                            <div class="text-3xl md:text-4xl font-bold stat-counter" id="statApprovedMembers">0</div>
+                            <div class="text-sm opacity-80 mt-1">Members</div>
+                        </div>
+                        <div class="stat-card bg-gradient-to-br from-purple-600 to-purple-700 shadow-purple-200">
+                            <div class="flex items-center justify-between mb-4"><i class="fas fa-user-tie text-3xl opacity-50"></i><span class="text-xs opacity-70 bg-white/20 px-2 py-1 rounded-full">Committee</span></div>
+                            <div class="text-3xl md:text-4xl font-bold stat-counter" id="statCommitteeMembers">0</div>
+                            <div class="text-sm opacity-80 mt-1">Members</div>
+                        </div>
+                        <div class="stat-card bg-gradient-to-br from-pink-600 to-pink-700 shadow-pink-200">
+                            <div class="flex items-center justify-between mb-4"><i class="fas fa-images text-3xl opacity-50"></i><span class="text-xs opacity-70 bg-white/20 px-2 py-1 rounded-full">Total</span></div>
+                            <div class="text-3xl md:text-4xl font-bold stat-counter" id="statGalleryImages">0</div>
+                            <div class="text-sm opacity-80 mt-1">Gallery</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- APPLICATIONS -->
+                <div id="page-applications" class="page">
+                    <div class="flex items-center justify-between mb-6">
+                        <div><h2 class="text-2xl font-bold text-gray-800">Applications</h2><p class="text-gray-500 text-sm">Pending member requests</p></div>
+                        <button onclick="loadApplications()" class="btn-primary btn-sm"><i class="fas fa-sync mr-1"></i>Refresh</button>
+                    </div>
+                    <div class="admin-card">
+                        <div class="overflow-x-auto">
+                            <table class="admin-table">
+                                <thead><tr><th>Photo</th><th>Name</th><th>Phone</th><th>TrxID</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+                                <tbody id="applicationsTableBody">
+                                    <tr><td colspan="7" class="text-center py-12 text-gray-400"><i class="fas fa-spinner fa-spin text-2xl"></i><p class="mt-2">Loading...</p></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MEMBERS -->
+                <div id="page-members" class="page">
+                    <div class="flex items-center justify-between mb-6">
+                        <div><h2 class="text-2xl font-bold text-gray-800">Member Management</h2><p class="text-gray-500 text-sm">Approved club members</p></div>
+                        <button onclick="showAddMemberModal()" class="btn-primary btn-sm"><i class="fas fa-plus mr-1"></i>Add Member</button>
+                    </div>
+                    <div class="admin-card">
+                        <div class="overflow-x-auto">
+                            <table class="admin-table">
+                                <thead><tr><th>Photo</th><th>Name</th><th>ID</th><th>Phone</th><th>Position</th><th>Actions</th></tr></thead>
+                                <tbody id="membersTableBody">
+                                    <tr><td colspan="6" class="text-center py-12 text-gray-400"><i class="fas fa-spinner fa-spin text-2xl"></i><p class="mt-2">Loading...</p></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COMMITTEE -->
+                <div id="page-committee" class="page">
+                    <div class="flex items-center justify-between mb-6">
+                        <div><h2 class="text-2xl font-bold text-gray-800">Committee Management</h2><p class="text-gray-500 text-sm">Executive committee members</p></div>
+                        <button onclick="showAddCommitteeModal()" class="btn-primary btn-sm"><i class="fas fa-plus mr-1"></i>Add Member</button>
+                    </div>
+                    <div class="admin-card">
+                        <div class="overflow-x-auto">
+                            <table class="admin-table">
+                                <thead><tr><th>Photo</th><th>Name</th><th>Position</th><th>Order</th><th>Actions</th></tr></thead>
+                                <tbody id="committeeTableBody">
+                                    <tr><td colspan="5" class="text-center py-12 text-gray-400"><i class="fas fa-spinner fa-spin text-2xl"></i><p class="mt-2">Loading...</p></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GALLERY -->
+                <div id="page-gallery" class="page">
+                    <div class="flex items-center justify-between mb-6">
+                        <div><h2 class="text-2xl font-bold text-gray-800">Gallery Management</h2><p class="text-gray-500 text-sm">Club photo gallery</p></div>
+                        <button onclick="showAddGalleryModal()" class="btn-primary btn-sm"><i class="fas fa-plus mr-1"></i>Add Image</button>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="galleryGrid"></div>
+                </div>
+
+                <!-- WEBSITE SETTINGS -->
+                <div id="page-settings" class="page">
+                    <div class="flex items-center justify-between mb-6">
+                        <div><h2 class="text-2xl font-bold text-gray-800">Website Settings</h2><p class="text-gray-500 text-sm">Customize club information</p></div>
+                    </div>
+                    <div class="max-w-3xl">
+                        <div class="admin-card p-6 md:p-8">
+                            <div class="space-y-5">
+                                <div class="grid md:grid-cols-2 gap-5">
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-1">Club Name</label><input type="text" id="setClubName" class="form-input"></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-1">Tagline</label><input type="text" id="setTagline" class="form-input"></div>
+                                </div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">About Text</label><textarea id="setAbout" rows="3" class="form-input"></textarea></div>
+                                <div class="grid md:grid-cols-2 gap-5">
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-1">Vision</label><textarea id="setVision" rows="3" class="form-input"></textarea></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-1">Mission</label><textarea id="setMission" rows="3" class="form-input"></textarea></div>
+                                </div>
+                                <div class="grid md:grid-cols-2 gap-5">
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-1">Bkash Number</label><input type="text" id="setBkash" class="form-input"></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-1">Nagad Number</label><input type="text" id="setNagad" class="form-input"></div>
+                                </div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Membership Fee (৳)</label><input type="number" id="setFee" class="form-input max-w-xs"></div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Logo</label>
+                                    <div class="flex items-center gap-4">
+                                        <img id="logoPreview" src="assets/logo.png" class="h-14 w-14 object-contain rounded-lg border" onerror="this.style.display='none'">
+                                        <input type="file" id="setLogo" accept="image/*" class="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary-50 file:text-primary-700 file:font-semibold file:cursor-pointer hover:file:bg-primary-100">
+                                    </div>
+                                </div>
+                                <button onclick="saveWebsiteSettings()" class="btn-primary"><i class="fas fa-save mr-2"></i>Save Settings</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTACT SETTINGS -->
+                <div id="page-contact" class="page">
+                    <div class="flex items-center justify-between mb-6">
+                        <div><h2 class="text-2xl font-bold text-gray-800">Contact Settings</h2><p class="text-gray-500 text-sm">Manage contact information</p></div>
+                    </div>
+                    <div class="max-w-2xl">
+                        <div class="admin-card p-6 md:p-8">
+                            <div class="space-y-5">
+                                <div class="grid md:grid-cols-2 gap-5">
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-1">Phone</label><input type="text" id="setPhone" class="form-input"></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-1">Email</label><input type="email" id="setEmail" class="form-input"></div>
+                                </div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Address</label><input type="text" id="setAddress" class="form-input"></div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Facebook URL</label><input type="url" id="setFacebook" class="form-input"></div>
+                                <div class="grid md:grid-cols-2 gap-5">
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-1">New Username</label><input type="text" id="accUser" class="form-input"></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-1">New Password</label><input type="text" id="accPass" class="form-input" placeholder="Leave empty to keep current"></div>
+                                </div>
+                                <button onclick="saveContactSettings()" class="btn-primary"><i class="fas fa-save mr-2"></i>Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
