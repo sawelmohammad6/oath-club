@@ -102,6 +102,9 @@
                 <a href="{{ route('admin.settings.website') }}" class="sidebar-link {{ request()->routeIs('admin.settings.website*') ? 'active' : '' }}"><i class="fas fa-cog"></i><span>Web Settings</span></a>
                 <a href="{{ route('admin.settings.contact') }}" class="sidebar-link {{ request()->routeIs('admin.settings.contact*') ? 'active' : '' }}"><i class="fas fa-address-card"></i><span>Contact</span></a>
                 <a href="{{ route('admin.settings.banners') }}" class="sidebar-link {{ request()->routeIs('admin.settings.banners*') ? 'active' : '' }}"><i class="fas fa-images"></i><span>Banners</span></a>
+                @if(session('admin_is_master'))
+                <a href="{{ route('admin.sub-admins') }}" class="sidebar-link {{ request()->routeIs('admin.sub-admins*') ? 'active' : '' }}"><i class="fas fa-user-cog"></i><span>Sub Admin Management</span></a>
+                @endif
             </nav>
             <div class="admin-sidebar-footer">
                 <a href="{{ route('home') }}" class="sidebar-link text-gray-500 hover:text-primary-600 hover:bg-primary-50"><i class="fas fa-globe"></i><span>View Website</span></a>
@@ -146,6 +149,9 @@
                     <a href="{{ route('admin.settings.website') }}" class="sidebar-link {{ request()->routeIs('admin.settings.website*') ? 'active' : '' }}"><i class="fas fa-cog"></i><span>Web Settings</span></a>
                     <a href="{{ route('admin.settings.contact') }}" class="sidebar-link {{ request()->routeIs('admin.settings.contact*') ? 'active' : '' }}"><i class="fas fa-address-card"></i><span>Contact</span></a>
                     <a href="{{ route('admin.settings.banners') }}" class="sidebar-link {{ request()->routeIs('admin.settings.banners*') ? 'active' : '' }}"><i class="fas fa-images"></i><span>Banners</span></a>
+                    @if(session('admin_is_master'))
+                    <a href="{{ route('admin.sub-admins') }}" class="sidebar-link {{ request()->routeIs('admin.sub-admins*') ? 'active' : '' }}"><i class="fas fa-user-cog"></i><span>Sub Admin Management</span></a>
+                    @endif
                 </nav>
                 <div class="admin-sidebar-footer">
                     <a href="{{ route('home') }}" class="sidebar-link text-gray-500 hover:text-primary-600 hover:bg-primary-50"><i class="fas fa-globe"></i><span>View Website</span></a>

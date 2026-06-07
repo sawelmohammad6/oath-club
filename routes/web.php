@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\SportsTeamController;
 use App\Http\Controllers\Admin\DonationSettingController;
 use App\Http\Controllers\Admin\BloodDonorController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\SubAdminController;
 
 // ========== PUBLIC FRONTEND ==========
 Route::get('/', [FrontendController::class, 'home'])->name('home');
@@ -121,5 +122,13 @@ Route::prefix('admin')->group(function () {
         Route::post('/settings/banners', [SettingController::class, 'storeBanner'])->name('admin.settings.banners.store');
         Route::post('/settings/banners/{id}', [SettingController::class, 'updateBanner'])->name('admin.settings.banners.update');
         Route::delete('/settings/banners/{id}', [SettingController::class, 'destroyBanner'])->name('admin.settings.banners.destroy');
+
+        // Sub Admin Management
+        Route::get('/sub-admins', [SubAdminController::class, 'index'])->name('admin.sub-admins');
+        Route::get('/sub-admins/create', [SubAdminController::class, 'create'])->name('admin.sub-admins.create');
+        Route::post('/sub-admins', [SubAdminController::class, 'store'])->name('admin.sub-admins.store');
+        Route::get('/sub-admins/{id}/edit', [SubAdminController::class, 'edit'])->name('admin.sub-admins.edit');
+        Route::put('/sub-admins/{id}', [SubAdminController::class, 'update'])->name('admin.sub-admins.update');
+        Route::delete('/sub-admins/{id}', [SubAdminController::class, 'destroy'])->name('admin.sub-admins.destroy');
     });
 });

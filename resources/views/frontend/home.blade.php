@@ -390,25 +390,7 @@
     </div>
 </section>
 
-@push('scripts')
-<script>
-document.getElementById('homeJoinForm')?.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const form = this;
-    const data = new FormData(form);
-    try {
-        const res = await fetch(form.action, { method: 'POST', body: data, headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-        const json = await res.json();
-        if (json.success) {
-            Swal.fire({ icon: 'success', title: 'ধন্যবাদ!', text: json.message, timer: 2000, showConfirmButton: false });
-            form.reset();
-        }
-    } catch(e) {
-        Swal.fire({ icon: 'error', title: 'ত্রুটি', text: 'আবেদন জমা দেওয়া যায়নি' });
-    }
-});
-</script>
-@endpush
+
 
 <!-- CONTACT -->
 <section id="contact" class="section-padding bg-white">
@@ -454,6 +436,22 @@ document.getElementById('homeJoinForm')?.addEventListener('submit', async functi
 
 @push('scripts')
 <script>
+document.getElementById('homeJoinForm')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const form = this;
+    const data = new FormData(form);
+    try {
+        const res = await fetch(form.action, { method: 'POST', body: data, headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+        const json = await res.json();
+        if (json.success) {
+            Swal.fire({ icon: 'success', title: 'ধন্যবাদ!', text: json.message, timer: 2000, showConfirmButton: false });
+            form.reset();
+        }
+    } catch(e) {
+        Swal.fire({ icon: 'error', title: 'ত্রুটি', text: 'আবেদন জমা দেওয়া যায়নি' });
+    }
+});
+
 let currentSlide = 0;
 let heroTimer = null;
 const slides = Array.from(document.querySelectorAll('#heroSlider [data-slide]'));
@@ -528,23 +526,27 @@ function filterMembers() {
 
 function toggleMembers() {
     const c = document.getElementById('membersContainer');
-    const btn = document.getElementById('toggleMembersBtn');
     const text = document.getElementById('toggleMembersText');
     const icon = document.getElementById('toggleMembersIcon');
     const isExpanded = c.classList.toggle('limited');
     text.textContent = isExpanded ? 'Show More' : 'Show Less';
     icon.style.transform = isExpanded ? '' : 'rotate(180deg)';
+    if (!isExpanded) {
+        document.getElementById('members').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+(function() {
     const c = document.getElementById('membersContainer');
     const cards = c?.querySelectorAll('.member-card');
     const wrapper = document.getElementById('toggleMembersWrapper');
-    if (window.innerWidth < 768 && cards && cards.length > 4) {
+    if (!c || !cards || !wrapper) return;
+    const limit = window.innerWidth < 768 ? 4 : 8;
+    if (cards.length > limit) {
         c.classList.add('limited');
-        if (wrapper) wrapper.style.display = '';
+        wrapper.style.display = '';
     }
-});
+})();
 
 async function submitContactForm(e) {
     e.preventDefault();

@@ -47,7 +47,7 @@
                 @csrf
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5"><i class="fas fa-envelope text-gray-400 mr-1.5"></i>Email</label>
-                    <input type="email" name="email" value="admin@oathclub.com" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition text-gray-800" placeholder="admin@oathclub.com">
+                    <input type="email" name="email" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition text-gray-800" placeholder="Enter your email">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5"><i class="fas fa-lock text-gray-400 mr-1.5"></i>Password</label>

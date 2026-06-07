@@ -38,10 +38,26 @@
         [data-aos=fade-right].aos-animate { transform: translateX(0); }
         [data-aos=fade-left] { transform: translateX(30px); }
         [data-aos=fade-left].aos-animate { transform: translateX(0); }
-        .member-card { transition: all 0.3s ease; }
+        .member-card { transition: all 0.35s ease; }
         .member-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(22, 163, 74, 0.15); }
+        #membersContainer { position: relative; }
         @media (max-width: 767px) {
-            #membersContainer.limited .member-card:nth-child(n+5) { display: none; }
+            #membersContainer.limited .member-card:nth-child(n+5) {
+                position: absolute;
+                opacity: 0;
+                pointer-events: none;
+                transform: scale(0.85);
+                z-index: -1;
+            }
+        }
+        @media (min-width: 768px) {
+            #membersContainer.limited .member-card:nth-child(n+9) {
+                position: absolute;
+                opacity: 0;
+                pointer-events: none;
+                transform: scale(0.85);
+                z-index: -1;
+            }
         }
         .glass-modal { background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); }
         .admin-modal-overlay { background: rgba(0,0,0,0.5); }

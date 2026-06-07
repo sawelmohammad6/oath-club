@@ -26,7 +26,7 @@ class AuthController extends Controller
         $admin = Admin::where('email', $credentials['email'])->first();
 
         if ($admin && password_verify($credentials['password'], $admin->password)) {
-            session(['admin_id' => $admin->id, 'admin_name' => $admin->name]);
+            session(['admin_id' => $admin->id, 'admin_name' => $admin->name, 'admin_is_master' => $admin->is_master]);
 
             if ($request->has('remember')) {
                 // Extend session lifetime via config
