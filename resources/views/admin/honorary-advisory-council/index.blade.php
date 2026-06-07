@@ -76,9 +76,11 @@
     </div>
 </div>
 
+@endsection
+
 @push('scripts')
 <script>
-const honoraryAdvisoryCouncilMembers = @json($members);
+const honoraryAdvisoryCouncilMembers = @json($members->items());
 
 function openHonoraryAdvisoryCouncilModal(data) {
     document.getElementById('honoraryAdvisoryCouncilModal').classList.remove('hidden');
@@ -95,6 +97,16 @@ function openHonoraryAdvisoryCouncilModal(data) {
 function editHonoraryAdvisoryCouncil(id) {
     const m = honoraryAdvisoryCouncilMembers.find(x => x.id === id);
     if (m) openHonoraryAdvisoryCouncilModal(m);
+}
+
+const initialHonoraryAdvisoryCouncilEditId = Number(@json(request('edit')));
+if (initialHonoraryAdvisoryCouncilEditId) {
+    const openInitialHonoraryAdvisoryCouncilEdit = () => editHonoraryAdvisoryCouncil(initialHonoraryAdvisoryCouncilEditId);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', openInitialHonoraryAdvisoryCouncilEdit);
+    } else {
+        openInitialHonoraryAdvisoryCouncilEdit();
+    }
 }
 
 function closeHonoraryAdvisoryCouncilModal() {

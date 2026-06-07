@@ -80,7 +80,7 @@
 
 @push('scripts')
 <script>
-const bloodDonors = @json($donors);
+const bloodDonors = @json($donors->items());
 
 function openBloodDonorModal(data) {
     document.getElementById('bloodDonorModal').classList.remove('hidden');
@@ -95,6 +95,16 @@ function openBloodDonorModal(data) {
 function editBloodDonor(id) {
     const donor = bloodDonors.find(item => item.id === id);
     if (donor) openBloodDonorModal(donor);
+}
+
+const initialBloodDonorEditId = Number(@json(request('edit')));
+if (initialBloodDonorEditId) {
+    const openInitialBloodDonorEdit = () => editBloodDonor(initialBloodDonorEditId);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', openInitialBloodDonorEdit);
+    } else {
+        openInitialBloodDonorEdit();
+    }
 }
 
 function closeBloodDonorModal() {

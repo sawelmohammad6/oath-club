@@ -134,7 +134,7 @@
 
 @push('scripts')
 <script>
-const teams = @json($teams);
+const teams = @json($teams->items());
 const players = teams.flatMap(t => t.players.map(p => ({...p, team_name: t.team_name})));
 
 function openTeamModal(id) {
@@ -150,6 +150,16 @@ function openTeamModal(id) {
     document.getElementById('teamForm').action = data ? '/admin/sports-teams/' + data.id : '{{ route("admin.sports-teams.store") }}';
 }
 function closeTeamModal() { document.getElementById('teamModal').classList.add('hidden'); }
+
+const initialTeamEditId = Number(@json(request('edit')));
+if (initialTeamEditId) {
+    const openInitialTeamEdit = () => openTeamModal(initialTeamEditId);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', openInitialTeamEdit);
+    } else {
+        openInitialTeamEdit();
+    }
+}
 
 function addPlayer(teamId) {
     document.getElementById('playerModal').classList.remove('hidden');

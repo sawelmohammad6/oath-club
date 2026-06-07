@@ -76,9 +76,11 @@
     </div>
 </div>
 
+@endsection
+
 @push('scripts')
 <script>
-const committeeMembers = @json($members);
+const committeeMembers = @json($members->items());
 
 function openCommitteeModal(data) {
     document.getElementById('committeeModal').classList.remove('hidden');
@@ -95,6 +97,16 @@ function openCommitteeModal(data) {
 function editCommittee(id) {
     const m = committeeMembers.find(x => x.id === id);
     if (m) openCommitteeModal(m);
+}
+
+const initialCommitteeEditId = Number(@json(request('edit')));
+if (initialCommitteeEditId) {
+    const openInitialCommitteeEdit = () => editCommittee(initialCommitteeEditId);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', openInitialCommitteeEdit);
+    } else {
+        openInitialCommitteeEdit();
+    }
 }
 
 function closeCommitteeModal() {

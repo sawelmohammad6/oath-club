@@ -122,7 +122,7 @@
 
 @push('scripts')
 <script>
-const galleryImages = @json($images);
+const galleryImages = @json($images->items());
 
 function openGalleryModal(data) {
     const form = document.getElementById('galleryForm');
@@ -141,6 +141,16 @@ function openGalleryModal(data) {
 function editGallery(id) {
     const image = galleryImages.find(item => item.id === id);
     if (image) openGalleryModal(image);
+}
+
+const initialGalleryEditId = Number(@json(request('edit')));
+if (initialGalleryEditId) {
+    const openInitialGalleryEdit = () => editGallery(initialGalleryEditId);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', openInitialGalleryEdit);
+    } else {
+        openInitialGalleryEdit();
+    }
 }
 
 function closeGalleryModal() { document.getElementById('galleryModal').classList.add('hidden'); }

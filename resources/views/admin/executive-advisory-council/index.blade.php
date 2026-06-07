@@ -76,9 +76,11 @@
     </div>
 </div>
 
+@endsection
+
 @push('scripts')
 <script>
-const executiveAdvisoryCouncilMembers = @json($members);
+const executiveAdvisoryCouncilMembers = @json($members->items());
 
 function openExecutiveAdvisoryCouncilModal(data) {
     document.getElementById('executiveAdvisoryCouncilModal').classList.remove('hidden');
@@ -95,6 +97,16 @@ function openExecutiveAdvisoryCouncilModal(data) {
 function editExecutiveAdvisoryCouncil(id) {
     const m = executiveAdvisoryCouncilMembers.find(x => x.id === id);
     if (m) openExecutiveAdvisoryCouncilModal(m);
+}
+
+const initialExecutiveAdvisoryCouncilEditId = Number(@json(request('edit')));
+if (initialExecutiveAdvisoryCouncilEditId) {
+    const openInitialExecutiveAdvisoryCouncilEdit = () => editExecutiveAdvisoryCouncil(initialExecutiveAdvisoryCouncilEditId);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', openInitialExecutiveAdvisoryCouncilEdit);
+    } else {
+        openInitialExecutiveAdvisoryCouncilEdit();
+    }
 }
 
 function closeExecutiveAdvisoryCouncilModal() {

@@ -112,7 +112,7 @@
 
 @push('scripts')
 <script>
-const details = @json($details);
+const details = @json($details->items());
 
 function openModal(id) {
     const data = id ? details.find(d => d.id === id) : null;
@@ -148,6 +148,16 @@ function openModal(id) {
 }
 
 function closeModal() { document.getElementById('detailModal').classList.add('hidden'); }
+
+const initialDetailEditId = Number(@json(request('edit')));
+if (initialDetailEditId) {
+    const openInitialDetailEdit = () => openModal(initialDetailEditId);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', openInitialDetailEdit);
+    } else {
+        openInitialDetailEdit();
+    }
+}
 
 function deleteImage(id) {
     Swal.fire({

@@ -105,7 +105,7 @@
 
 @push('scripts')
 <script>
-const members = @json($members);
+const members = @json($members->items());
 
 function openMemberModal(data) {
     document.getElementById('memberModal').classList.remove('hidden');
@@ -129,6 +129,16 @@ function openMemberModal(data) {
 function editMember(id) {
     const m = members.find(x => x.id === id);
     if (m) openMemberModal(m);
+}
+
+const initialMemberEditId = Number(@json(request('edit')));
+if (initialMemberEditId) {
+    const openInitialMemberEdit = () => editMember(initialMemberEditId);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', openInitialMemberEdit);
+    } else {
+        openInitialMemberEdit();
+    }
 }
 
 function closeMemberModal() {

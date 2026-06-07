@@ -31,7 +31,7 @@
         .sidebar-link.active { background: #ecfdf5; color: #15803d; box-shadow: inset 3px 0 0 #16a34a; }
         .sidebar-link i { flex: 0 0 1.25rem; width: 1.25rem; text-align: center; font-size: 1rem; }
         .sidebar-link span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
-        .stat-card { border-radius: 0.5rem; padding: 1.25rem; color: white; transition: all 0.3s ease; cursor: default; }
+        .stat-card { border-radius: 0.5rem; padding: 1.25rem; color: white; transition: all 0.3s ease; text-decoration: none; }
         .stat-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
         .btn-primary { padding: 0.625rem 1.1rem; background: linear-gradient(135deg, #16a34a, #22c55e); color: white; border-radius: 0.5rem; transition: all 0.2s ease; font-weight: 700; box-shadow: 0 4px 12px rgba(22,163,74,0.25); display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.875rem; line-height: 1.2; white-space: nowrap; }
         .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(22,163,74,0.35); }

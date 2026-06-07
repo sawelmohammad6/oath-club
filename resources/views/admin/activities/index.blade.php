@@ -106,9 +106,11 @@
     </div>
 </div>
 
+@endsection
+
 @push('scripts')
 <script>
-const activities = @json($activities);
+const activities = @json($activities->items());
 
 function openActivityModal(data) {
     document.getElementById('activityModal').classList.remove('hidden');
@@ -126,6 +128,16 @@ function openActivityModal(data) {
 function editActivity(id) {
     const a = activities.find(x => x.id === id);
     if (a) openActivityModal(a);
+}
+
+const initialActivityEditId = Number(@json(request('edit')));
+if (initialActivityEditId) {
+    const openInitialActivityEdit = () => editActivity(initialActivityEditId);
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', openInitialActivityEdit);
+    } else {
+        openInitialActivityEdit();
+    }
 }
 
 function closeActivityModal() { document.getElementById('activityModal').classList.add('hidden'); }
