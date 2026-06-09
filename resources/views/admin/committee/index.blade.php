@@ -42,9 +42,6 @@
                 @endforelse
             </tbody>
         </table>
-        <div class="px-4 py-3 border-t border-gray-100">
-            {{ $members->links() }}
-        </div>
     </div>
 </div>
 
@@ -80,7 +77,7 @@
 
 @push('scripts')
 <script>
-const committeeMembers = @json($members->items());
+const committeeMembers = @json($members);
 
 function openCommitteeModal(data) {
     document.getElementById('committeeModal').classList.remove('hidden');

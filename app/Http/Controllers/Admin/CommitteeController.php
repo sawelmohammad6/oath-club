@@ -13,7 +13,7 @@ class CommitteeController extends Controller
         $members = CommitteeMember::withoutGlobalScope('sort_order')
             ->orderBy('sort_order')
             ->orderBy('id')
-            ->paginate(20);
+            ->get();
 
         return view('admin.committee.index', compact('members'));
     }
