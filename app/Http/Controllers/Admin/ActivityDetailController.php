@@ -13,7 +13,11 @@ class ActivityDetailController extends Controller
 {
     public function index()
     {
-        $details = ActivityDetail::with('activity', 'images')->latest()->paginate(20);
+        $details = ActivityDetail::withoutGlobalScope('sort_order')
+            ->with('activity', 'images')
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->paginate(20);
         $activities = Activity::all();
         return view('admin.activity-details.index', compact('details', 'activities'));
     }
@@ -33,6 +37,7 @@ class ActivityDetailController extends Controller
             $data['slug'] = Str::slug($data['title']);
         }
 
+        $data['sort_order'] = ActivityDetail::max('sort_order') + 1;
         $detail = ActivityDetail::create($data);
 
         if ($request->hasFile('images')) {
@@ -72,6 +77,15 @@ class ActivityDetailController extends Controller
         }
 
         return redirect()->route('admin.activity-details')->with('success', 'Activity detail updated.');
+    }
+
+    public function reorder(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        foreach ($ids as $i => $id) {
+            ActivityDetail::where('id', $id)->update(['sort_order' => $i]);
+        }
+        return response()->json(['success' => true]);
     }
 
     public function destroy($id)

@@ -16,6 +16,7 @@
         <table class="admin-table">
             <thead>
                 <tr>
+                    <th style="width: 40px;"></th>
                     <th>Slug</th>
                     <th>Title</th>
                     <th>Activity</th>
@@ -26,7 +27,8 @@
             </thead>
             <tbody>
                 @forelse($details as $d)
-                <tr>
+                <tr data-id="{{ $d->id }}">
+                    <td class="text-gray-400 text-sm cursor-grab handle"><i class="fas fa-grip-vertical"></i></td>
                     <td class="font-mono text-sm text-gray-500">{{ $d->slug }}</td>
                     <td class="font-medium">{{ $d->title }}</td>
                     <td class="text-gray-500">{{ $d->activity->title ?? '—' }}</td>
@@ -43,7 +45,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="6" class="text-center py-12 text-gray-400"><i class="fas fa-file-alt text-3xl mb-2"></i><p>No detail pages yet</p></td></tr>
+                <tr><td colspan="7" class="text-center py-12 text-gray-400"><i class="fas fa-file-alt text-3xl mb-2"></i><p>No detail pages yet</p></td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -170,6 +172,24 @@ function deleteImage(id) {
         }
     });
 }
+
+(function() {
+    const el = document.querySelector('.admin-table tbody');
+    if (!el) return;
+    Sortable.create(el, {
+        handle: '.handle',
+        animation: 150,
+        onEnd: function() {
+            const ids = [];
+            el.querySelectorAll('tr').forEach(tr => { if (tr.dataset.id) ids.push(Number(tr.dataset.id)); });
+            fetch('{{ route("admin.activity-details.reorder") }}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                body: JSON.stringify({ ids })
+            });
+        }
+    });
+})();
 </script>
 @endpush
 @endsection

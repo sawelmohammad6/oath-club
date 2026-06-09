@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasSortOrder;
 use Illuminate\Database\Eloquent\Model;
 
 class ActivityDetail extends Model
 {
-    protected $fillable = ['slug', 'activity_id', 'title', 'description', 'event_date'];
+    use HasSortOrder;
+
+    protected $fillable = ['slug', 'activity_id', 'title', 'description', 'event_date', 'sort_order'];
 
     public function activity()
     {

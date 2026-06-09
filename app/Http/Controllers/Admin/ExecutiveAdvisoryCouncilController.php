@@ -10,8 +10,9 @@ class ExecutiveAdvisoryCouncilController extends Controller
 {
     public function index()
     {
-        $members = ExecutiveAdvisoryCouncilMember::orderBy('created_at', 'asc')
-            ->orderBy('id', 'asc')
+        $members = ExecutiveAdvisoryCouncilMember::withoutGlobalScope('sort_order')
+            ->orderBy('sort_order')
+            ->orderBy('id')
             ->paginate(20);
 
         return view('admin.executive-advisory-council.index', compact('members'));
@@ -29,6 +30,7 @@ class ExecutiveAdvisoryCouncilController extends Controller
             $data['photo'] = $request->file('photo')->store('executive-advisory-council', 'public');
         }
 
+        $data['sort_order'] = ExecutiveAdvisoryCouncilMember::max('sort_order') + 1;
         ExecutiveAdvisoryCouncilMember::create($data);
         return redirect()->route('admin.executive-advisory-council')->with('success', 'Executive advisory council member added.');
     }
@@ -49,6 +51,15 @@ class ExecutiveAdvisoryCouncilController extends Controller
 
         $member->update($data);
         return redirect()->route('admin.executive-advisory-council')->with('success', 'Executive advisory council member updated.');
+    }
+
+    public function reorder(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        foreach ($ids as $i => $id) {
+            ExecutiveAdvisoryCouncilMember::where('id', $id)->update(['sort_order' => $i]);
+        }
+        return response()->json(['success' => true]);
     }
 
     public function destroy($id)

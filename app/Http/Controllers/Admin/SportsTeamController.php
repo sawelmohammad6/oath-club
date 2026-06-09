@@ -11,7 +11,11 @@ class SportsTeamController extends Controller
 {
     public function index()
     {
-        $teams = SportsTeam::with('players')->latest()->paginate(20);
+        $teams = SportsTeam::withoutGlobalScope('sort_order')
+            ->with('players')
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->paginate(20);
         return view('admin.sports-teams.index', compact('teams'));
     }
 
@@ -28,6 +32,7 @@ class SportsTeamController extends Controller
             $data['banner_image'] = $request->file('banner_image')->store('sports-teams', 'public');
         }
 
+        $data['sort_order'] = SportsTeam::max('sort_order') + 1;
         SportsTeam::create($data);
         return redirect()->route('admin.sports-teams')->with('success', 'Team created.');
     }
@@ -52,6 +57,15 @@ class SportsTeamController extends Controller
         return redirect()->route('admin.sports-teams')->with('success', 'Team updated.');
     }
 
+    public function reorder(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        foreach ($ids as $i => $id) {
+            SportsTeam::where('id', $id)->update(['sort_order' => $i]);
+        }
+        return response()->json(['success' => true]);
+    }
+
     public function destroy($id)
     {
         $team = SportsTeam::findOrFail($id);
@@ -69,6 +83,7 @@ class SportsTeamController extends Controller
             'position' => 'nullable|string|max:255',
         ]);
 
+        $data['sort_order'] = SportPlayer::where('sports_team_id', $data['sports_team_id'])->max('sort_order') + 1;
         SportPlayer::create($data);
         return redirect()->route('admin.sports-teams')->with('success', 'Player added.');
     }
@@ -82,6 +97,15 @@ class SportsTeamController extends Controller
         ]);
         $player->update($data);
         return redirect()->route('admin.sports-teams')->with('success', 'Player updated.');
+    }
+
+    public function reorderPlayers(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        foreach ($ids as $i => $id) {
+            SportPlayer::where('id', $id)->update(['sort_order' => $i]);
+        }
+        return response()->json(['success' => true]);
     }
 
     public function destroyPlayer($id)

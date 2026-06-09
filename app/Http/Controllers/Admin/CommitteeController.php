@@ -10,7 +10,10 @@ class CommitteeController extends Controller
 {
     public function index()
     {
-        $members = CommitteeMember::orderBy('created_at', 'asc')->paginate(20);
+        $members = CommitteeMember::withoutGlobalScope('sort_order')
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->paginate(20);
 
         return view('admin.committee.index', compact('members'));
     }
@@ -27,6 +30,7 @@ class CommitteeController extends Controller
             $data['photo'] = $request->file('photo')->store('committee', 'public');
         }
 
+        $data['sort_order'] = CommitteeMember::max('sort_order') + 1;
         CommitteeMember::create($data);
         return redirect()->route('admin.committee')->with('success', 'Committee member added.');
     }
@@ -47,6 +51,15 @@ class CommitteeController extends Controller
 
         $member->update($data);
         return redirect()->route('admin.committee')->with('success', 'Committee member updated.');
+    }
+
+    public function reorder(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        foreach ($ids as $i => $id) {
+            CommitteeMember::where('id', $id)->update(['sort_order' => $i]);
+        }
+        return response()->json(['success' => true]);
     }
 
     public function destroy($id)

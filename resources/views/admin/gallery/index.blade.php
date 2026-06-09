@@ -28,6 +28,7 @@
         <table class="admin-table">
             <thead>
                 <tr>
+                    <th style="width: 40px;"></th>
                     <th class="text-center" style="width: 40px;"><input type="checkbox" id="selectAll" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500"></th>
                     <th style="width: 100px;">Preview</th>
                     <th style="min-width: 180px;">Image Name</th>
@@ -38,7 +39,8 @@
             </thead>
             <tbody>
                 @forelse($images as $img)
-                <tr>
+                <tr data-id="{{ $img->id }}">
+                    <td class="text-gray-400 text-sm cursor-grab handle"><i class="fas fa-grip-vertical"></i></td>
                     <td class="text-center"><input type="checkbox" class="row-checkbox rounded border-gray-300 text-primary-600 focus:ring-primary-500" value="{{ $img->id }}"></td>
                     <td>
                         <button type="button" onclick='previewImage(@json(asset('storage/'.$img->image)), @json($img->caption ?? ''))' class="block">
@@ -64,7 +66,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="text-center py-16">
+                    <td colspan="7" class="text-center py-16">
                         <div class="flex flex-col items-center gap-3">
                             <i class="fas fa-images text-5xl text-gray-300"></i>
                             <p class="text-gray-400 text-lg font-medium">No images yet</p>
@@ -222,5 +224,23 @@ document.getElementById('galleryImageInput')?.addEventListener('change', functio
     const file = this.files && this.files[0];
     setGalleryImagePreview(file ? URL.createObjectURL(file) : '');
 });
+
+(function() {
+    const el = document.querySelector('.admin-table tbody');
+    if (!el) return;
+    Sortable.create(el, {
+        handle: '.handle',
+        animation: 150,
+        onEnd: function() {
+            const ids = [];
+            el.querySelectorAll('tr').forEach(tr => { if (tr.dataset.id) ids.push(Number(tr.dataset.id)); });
+            fetch('{{ route("admin.gallery.reorder") }}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                body: JSON.stringify({ ids })
+            });
+        }
+    });
+})();
 </script>
 @endpush

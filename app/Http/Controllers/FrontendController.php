@@ -20,16 +20,12 @@ class FrontendController extends Controller
 {
     public function home()
     {
-        $members = Member::orderBy('created_at', 'desc')->get();
-        $honoraryAdvisoryCouncilMembers = HonoraryAdvisoryCouncilMember::orderBy('created_at', 'asc')
-            ->orderBy('id', 'asc')
-            ->get();
-        $executiveAdvisoryCouncilMembers = ExecutiveAdvisoryCouncilMember::orderBy('created_at', 'asc')
-            ->orderBy('id', 'asc')
-            ->get();
-        $committee = CommitteeMember::orderBy('created_at', 'asc')->get();
-        $gallery = Gallery::latest()->paginate(20);
-        $activities = Activity::all();
+        $members = Member::get();
+        $honoraryAdvisoryCouncilMembers = HonoraryAdvisoryCouncilMember::get();
+        $executiveAdvisoryCouncilMembers = ExecutiveAdvisoryCouncilMember::get();
+        $committee = CommitteeMember::get();
+        $gallery = Gallery::paginate(20);
+        $activities = Activity::get();
         $settings = WebsiteSetting::getAllAsArray();
         $managedBanners = Banner::where('is_active', true)
             ->orderBy('sort_order')

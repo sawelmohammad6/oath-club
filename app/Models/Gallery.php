@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasSortOrder;
 use Illuminate\Database\Eloquent\Model;
 
 class Gallery extends Model
 {
-    protected $fillable = ['image', 'caption'];
+    use HasSortOrder;
+
+    protected $fillable = ['image', 'caption', 'sort_order'];
 }

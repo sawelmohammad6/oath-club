@@ -12,7 +12,10 @@ class GalleryController extends Controller
 {
     public function index()
     {
-        $images = Gallery::latest()->paginate(20);
+        $images = Gallery::withoutGlobalScope('sort_order')
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->paginate(20);
         return view('admin.gallery.index', compact('images'));
     }
 
@@ -24,6 +27,7 @@ class GalleryController extends Controller
         ]);
 
         $data['image'] = $request->file('image')->store('gallery', 'public');
+        $data['sort_order'] = Gallery::max('sort_order') + 1;
         Gallery::create($data);
 
         return redirect()->route('admin.gallery')->with('success', 'Image uploaded successfully.');
@@ -67,6 +71,15 @@ class GalleryController extends Controller
         return redirect()->route('admin.gallery')->with('success', 'Image deleted.');
     }
 
+    public function reorder(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        foreach ($ids as $i => $id) {
+            Gallery::where('id', $id)->update(['sort_order' => $i]);
+        }
+        return response()->json(['success' => true]);
+    }
+
     public function bulkDelete(Request $request)
     {
         $ids = json_decode($request->input('ids', '[]'));
@@ -88,6 +101,8 @@ class GalleryController extends Controller
         $assetsPath = public_path('assets');
         $imported = 0;
         $skipped = 0;
+
+        $maxSort = Gallery::max('sort_order') ?? 0;
 
         for ($i = 1; $i <= 24; $i++) {
             $found = false;
@@ -114,9 +129,11 @@ class GalleryController extends Controller
 
                     File::copy($filePath, $destFull);
 
+                    $maxSort++;
                     Gallery::create([
                         'image' => $destPath,
                         'caption' => "Gallery Image {$i}",
+                        'sort_order' => $maxSort,
                     ]);
 
                     $imported++;

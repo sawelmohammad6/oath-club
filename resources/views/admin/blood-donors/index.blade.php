@@ -16,6 +16,7 @@
         <table class="admin-table">
             <thead>
                 <tr>
+                    <th style="width: 40px;"></th>
                     <th>Name</th>
                     <th>Blood Group</th>
                     <th>Contact Number</th>
@@ -25,7 +26,8 @@
             </thead>
             <tbody>
                 @forelse($donors as $donor)
-                <tr>
+                <tr data-id="{{ $donor->id }}">
+                    <td class="text-gray-400 text-sm cursor-grab handle"><i class="fas fa-grip-vertical"></i></td>
                     <td class="font-medium">{{ $donor->name }}</td>
                     <td><span class="badge bg-red-100 text-red-600">{{ $donor->blood_group }}</span></td>
                     <td class="text-gray-500">{{ $donor->contact_number }}</td>
@@ -41,7 +43,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="5" class="text-center py-12 text-gray-400"><i class="fas fa-tint text-3xl mb-2"></i><p>No blood donors yet</p></td></tr>
+                <tr><td colspan="6" class="text-center py-12 text-gray-400"><i class="fas fa-tint text-3xl mb-2"></i><p>No blood donors yet</p></td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -110,6 +112,24 @@ if (initialBloodDonorEditId) {
 function closeBloodDonorModal() {
     document.getElementById('bloodDonorModal').classList.add('hidden');
 }
+
+(function() {
+    const el = document.querySelector('.admin-table tbody');
+    if (!el) return;
+    Sortable.create(el, {
+        handle: '.handle',
+        animation: 150,
+        onEnd: function() {
+            const ids = [];
+            el.querySelectorAll('tr').forEach(tr => { if (tr.dataset.id) ids.push(Number(tr.dataset.id)); });
+            fetch('{{ route("admin.blood-donors.reorder") }}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                body: JSON.stringify({ ids })
+            });
+        }
+    });
+})();
 </script>
 @endpush
 @endsection

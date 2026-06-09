@@ -10,7 +10,10 @@ class ActivityController extends Controller
 {
     public function index()
     {
-        $activities = Activity::latest()->paginate(20);
+        $activities = Activity::withoutGlobalScope('sort_order')
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->paginate(20);
         return view('admin.activities.index', compact('activities'));
     }
 
@@ -27,6 +30,7 @@ class ActivityController extends Controller
             $data['image'] = $request->file('image')->store('activities', 'public');
         }
 
+        $data['sort_order'] = Activity::max('sort_order') + 1;
         Activity::create($data);
         return redirect()->route('admin.activities')->with('success', 'Activity added.');
     }
@@ -48,6 +52,15 @@ class ActivityController extends Controller
 
         $activity->update($data);
         return redirect()->route('admin.activities')->with('success', 'Activity updated.');
+    }
+
+    public function reorder(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        foreach ($ids as $i => $id) {
+            Activity::where('id', $id)->update(['sort_order' => $i]);
+        }
+        return response()->json(['success' => true]);
     }
 
     public function destroy($id)

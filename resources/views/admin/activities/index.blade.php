@@ -16,6 +16,7 @@
         <table class="admin-table">
             <thead>
                 <tr>
+                    <th style="width: 40px;"></th>
                     <th>Image</th>
                     <th>Title(BN)</th>
                     <th>Title (EN)</th>
@@ -26,7 +27,8 @@
             </thead>
             <tbody>
                 @forelse($activities as $a)
-                <tr>
+                <tr data-id="{{ $a->id }}">
+                    <td class="text-gray-400 text-sm cursor-grab handle"><i class="fas fa-grip-vertical"></i></td>
                     <td>
                         @if($a->image)
                         <button type="button" onclick='previewActivityImage(@json(asset('storage/'.$a->image)), @json($a->title))' class="block">
@@ -54,7 +56,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="6" class="text-center py-12 text-gray-400"><i class="fas fa-tasks text-3xl mb-2"></i><p>No activities yet</p></td></tr>
+                <tr><td colspan="7" class="text-center py-12 text-gray-400"><i class="fas fa-tasks text-3xl mb-2"></i><p>No activities yet</p></td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -163,5 +165,23 @@ document.getElementById('aImage')?.addEventListener('change', function () {
     const file = this.files && this.files[0];
     setActivityImagePreview(file ? URL.createObjectURL(file) : '');
 });
+
+(function() {
+    const el = document.querySelector('.admin-table tbody');
+    if (!el) return;
+    Sortable.create(el, {
+        handle: '.handle',
+        animation: 150,
+        onEnd: function() {
+            const ids = [];
+            el.querySelectorAll('tr').forEach(tr => { if (tr.dataset.id) ids.push(Number(tr.dataset.id)); });
+            fetch('{{ route("admin.activities.reorder") }}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                body: JSON.stringify({ ids })
+            });
+        }
+    });
+})();
 </script>
 @endpush

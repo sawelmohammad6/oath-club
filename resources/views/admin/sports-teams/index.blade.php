@@ -11,11 +11,12 @@
     <button onclick="openTeamModal()" class="btn-primary"><i class="fas fa-plus"></i> Create Team</button>
 </div>
 
-<div class="space-y-6">
+<div class="space-y-6" id="sportsTeamsContainer">
     @forelse($teams as $team)
-    <div class="admin-card">
+    <div class="admin-card" data-id="{{ $team->id }}">
         <div class="p-4 flex items-center justify-between border-b border-gray-100">
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 cursor-grab handle-team">
+                <i class="fas fa-grip-vertical text-gray-300"></i>
                 <span class="px-3 py-1 rounded-full text-xs font-bold {{ $team->sport_type === 'Cricket' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700' }}">{{ $team->sport_type }}</span>
                 <h3 class="font-bold text-gray-800 text-lg">{{ $team->team_name }}</h3>
                 <span class="text-gray-400 text-sm">{{ $team->players->count() }} players</span>
@@ -32,10 +33,11 @@
         @if($team->players->isNotEmpty())
         <div class="overflow-x-auto">
             <table class="admin-table">
-                <thead><tr><th>Player Name</th><th>Position</th><th class="text-right">Actions</th></tr></thead>
-                <tbody>
+                <thead><tr><th style="width: 36px;"></th><th>Player Name</th><th>Position</th><th class="text-right">Actions</th></tr></thead>
+                <tbody class="player-tbody" data-team-id="{{ $team->id }}">
                     @foreach($team->players as $p)
-                    <tr>
+                    <tr data-id="{{ $p->id }}">
+                        <td class="text-gray-400 cursor-grab handle-player"><i class="fas fa-grip-vertical text-xs"></i></td>
                         <td class="font-medium">{{ $p->player_name }}</td>
                         <td class="text-gray-500">{{ $p->position ?: '-' }}</td>
                         <td class="text-right">
@@ -184,6 +186,40 @@ function editPlayer(id) {
     document.getElementById('playerForm').action = '/admin/sports-teams/players/' + p.id;
 }
 function closePlayerModal() { document.getElementById('playerModal').classList.add('hidden'); }
+
+(function() {
+    const container = document.getElementById('sportsTeamsContainer');
+    if (container) {
+        Sortable.create(container, {
+            handle: '.handle-team',
+            animation: 150,
+            onEnd: function() {
+                const ids = [];
+                container.querySelectorAll(':scope > .admin-card').forEach(card => { if (card.dataset.id) ids.push(Number(card.dataset.id)); });
+                fetch('{{ route("admin.sports-teams.reorder") }}', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                    body: JSON.stringify({ ids })
+                });
+            }
+        });
+    }
+    document.querySelectorAll('.player-tbody').forEach(tbody => {
+        Sortable.create(tbody, {
+            handle: '.handle-player',
+            animation: 150,
+            onEnd: function() {
+                const ids = [];
+                tbody.querySelectorAll('tr').forEach(tr => { if (tr.dataset.id) ids.push(Number(tr.dataset.id)); });
+                fetch('{{ route("admin.sports-teams.players.reorder") }}', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                    body: JSON.stringify({ ids })
+                });
+            }
+        });
+    });
+})();
 </script>
 @endpush
 @endsection

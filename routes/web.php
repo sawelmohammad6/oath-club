@@ -49,30 +49,35 @@ Route::prefix('admin')->group(function () {
         // Members
         Route::get('/members', [MemberController::class, 'index'])->name('admin.members');
         Route::post('/members', [MemberController::class, 'store'])->name('admin.members.store');
+        Route::post('/members/reorder', [MemberController::class, 'reorder'])->name('admin.members.reorder');
         Route::post('/members/{id}', [MemberController::class, 'update'])->name('admin.members.update');
         Route::delete('/members/{id}', [MemberController::class, 'destroy'])->name('admin.members.destroy');
 
         // Honorary Advisory Council
         Route::get('/honorary-advisory-council', [HonoraryAdvisoryCouncilController::class, 'index'])->name('admin.honorary-advisory-council');
         Route::post('/honorary-advisory-council', [HonoraryAdvisoryCouncilController::class, 'store'])->name('admin.honorary-advisory-council.store');
+        Route::post('/honorary-advisory-council/reorder', [HonoraryAdvisoryCouncilController::class, 'reorder'])->name('admin.honorary-advisory-council.reorder');
         Route::post('/honorary-advisory-council/{id}', [HonoraryAdvisoryCouncilController::class, 'update'])->name('admin.honorary-advisory-council.update');
         Route::delete('/honorary-advisory-council/{id}', [HonoraryAdvisoryCouncilController::class, 'destroy'])->name('admin.honorary-advisory-council.destroy');
 
         // Executive Advisory Council
         Route::get('/executive-advisory-council', [ExecutiveAdvisoryCouncilController::class, 'index'])->name('admin.executive-advisory-council');
         Route::post('/executive-advisory-council', [ExecutiveAdvisoryCouncilController::class, 'store'])->name('admin.executive-advisory-council.store');
+        Route::post('/executive-advisory-council/reorder', [ExecutiveAdvisoryCouncilController::class, 'reorder'])->name('admin.executive-advisory-council.reorder');
         Route::post('/executive-advisory-council/{id}', [ExecutiveAdvisoryCouncilController::class, 'update'])->name('admin.executive-advisory-council.update');
         Route::delete('/executive-advisory-council/{id}', [ExecutiveAdvisoryCouncilController::class, 'destroy'])->name('admin.executive-advisory-council.destroy');
 
         // Committee
         Route::get('/committee', [CommitteeController::class, 'index'])->name('admin.committee');
         Route::post('/committee', [CommitteeController::class, 'store'])->name('admin.committee.store');
+        Route::post('/committee/reorder', [CommitteeController::class, 'reorder'])->name('admin.committee.reorder');
         Route::post('/committee/{id}', [CommitteeController::class, 'update'])->name('admin.committee.update');
         Route::delete('/committee/{id}', [CommitteeController::class, 'destroy'])->name('admin.committee.destroy');
 
         // Gallery
         Route::get('/gallery', [GalleryController::class, 'index'])->name('admin.gallery');
         Route::post('/gallery', [GalleryController::class, 'store'])->name('admin.gallery.store');
+        Route::post('/gallery/reorder', [GalleryController::class, 'reorder'])->name('admin.gallery.reorder');
         Route::delete('/gallery/bulk-delete', [GalleryController::class, 'bulkDelete'])->name('admin.gallery.bulk-delete');
         Route::get('/gallery/auto-import', [GalleryController::class, 'autoImport'])->name('admin.gallery.import');
         Route::post('/gallery/{id}/caption', [GalleryController::class, 'updateCaption'])->name('admin.gallery.caption');
@@ -82,6 +87,7 @@ Route::prefix('admin')->group(function () {
         // Activities
         Route::get('/activities', [ActivityController::class, 'index'])->name('admin.activities');
         Route::post('/activities', [ActivityController::class, 'store'])->name('admin.activities.store');
+        Route::post('/activities/reorder', [ActivityController::class, 'reorder'])->name('admin.activities.reorder');
         Route::post('/activities/{id}', [ActivityController::class, 'update'])->name('admin.activities.update');
         Route::delete('/activities/{id}', [ActivityController::class, 'destroy'])->name('admin.activities.destroy');
 
@@ -94,6 +100,7 @@ Route::prefix('admin')->group(function () {
         // Activity Details
         Route::get('/activity-details', [ActivityDetailController::class, 'index'])->name('admin.activity-details');
         Route::post('/activity-details', [ActivityDetailController::class, 'store'])->name('admin.activity-details.store');
+        Route::post('/activity-details/reorder', [ActivityDetailController::class, 'reorder'])->name('admin.activity-details.reorder');
         Route::post('/activity-details/{id}', [ActivityDetailController::class, 'update'])->name('admin.activity-details.update');
         Route::delete('/activity-details/{id}', [ActivityDetailController::class, 'destroy'])->name('admin.activity-details.destroy');
         Route::delete('/activity-details/image/{id}', [ActivityDetailController::class, 'destroyImage'])->name('admin.activity-details.image.destroy');
@@ -101,7 +108,9 @@ Route::prefix('admin')->group(function () {
         // Sports Teams (literal routes before parameterized)
         Route::get('/sports-teams', [SportsTeamController::class, 'index'])->name('admin.sports-teams');
         Route::post('/sports-teams', [SportsTeamController::class, 'store'])->name('admin.sports-teams.store');
+        Route::post('/sports-teams/reorder', [SportsTeamController::class, 'reorder'])->name('admin.sports-teams.reorder');
         Route::post('/sports-teams/players', [SportsTeamController::class, 'storePlayer'])->name('admin.sports-teams.players.store');
+        Route::post('/sports-teams/players/reorder', [SportsTeamController::class, 'reorderPlayers'])->name('admin.sports-teams.players.reorder');
         Route::post('/sports-teams/players/{id}', [SportsTeamController::class, 'updatePlayer'])->name('admin.sports-teams.players.update');
         Route::delete('/sports-teams/players/{id}', [SportsTeamController::class, 'destroyPlayer'])->name('admin.sports-teams.players.destroy');
         Route::post('/sports-teams/{id}', [SportsTeamController::class, 'update'])->name('admin.sports-teams.update');
@@ -110,6 +119,7 @@ Route::prefix('admin')->group(function () {
         // Blood Donors
         Route::get('/blood-donors', [BloodDonorController::class, 'index'])->name('admin.blood-donors');
         Route::post('/blood-donors', [BloodDonorController::class, 'store'])->name('admin.blood-donors.store');
+        Route::post('/blood-donors/reorder', [BloodDonorController::class, 'reorder'])->name('admin.blood-donors.reorder');
         Route::post('/blood-donors/{id}', [BloodDonorController::class, 'update'])->name('admin.blood-donors.update');
         Route::delete('/blood-donors/{id}', [BloodDonorController::class, 'destroy'])->name('admin.blood-donors.destroy');
 

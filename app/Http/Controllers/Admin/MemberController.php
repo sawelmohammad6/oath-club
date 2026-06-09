@@ -10,7 +10,11 @@ class MemberController extends Controller
 {
     public function index()
     {
-        $members = Member::with('application')->orderBy('created_at', 'desc')->paginate(20);
+        $members = Member::withoutGlobalScope('sort_order')
+            ->with('application')
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->paginate(20);
         return view('admin.members.index', compact('members'));
     }
 
@@ -36,10 +40,11 @@ class MemberController extends Controller
 
         $data['name'] = $data['full_name'];
 
-        $lastMember = Member::latest()->first();
+        $lastMember = Member::withoutGlobalScope('sort_order')->latest('id')->first();
         $lastNum = $lastMember ? intval(substr($lastMember->member_id, 3)) : 0;
         $data['member_id'] = 'OC-' . str_pad($lastNum + 1, 4, '0', STR_PAD_LEFT);
 
+        $data['sort_order'] = Member::max('sort_order') + 1;
         Member::create($data);
         return redirect()->route('admin.members')->with('success', 'Member added successfully.');
     }
@@ -69,6 +74,15 @@ class MemberController extends Controller
         $data['name'] = $data['full_name'];
         $member->update($data);
         return redirect()->route('admin.members')->with('success', 'Member updated successfully.');
+    }
+
+    public function reorder(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        foreach ($ids as $i => $id) {
+            Member::where('id', $id)->update(['sort_order' => $i]);
+        }
+        return response()->json(['success' => true]);
     }
 
     public function destroy($id)

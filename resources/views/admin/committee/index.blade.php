@@ -13,7 +13,7 @@
         <table class="admin-table w-full text-sm">
             <thead>
                 <tr>
-                    <th class="px-4 py-3.5 bg-gray-50 text-left font-semibold text-gray-600 text-xs uppercase">#</th>
+                    <th class="px-4 py-3.5 bg-gray-50 text-left font-semibold text-gray-600 text-xs uppercase w-10"></th>
                     <th class="px-4 py-3.5 bg-gray-50 text-left font-semibold text-gray-600 text-xs uppercase">Photo</th>
                     <th class="px-4 py-3.5 bg-gray-50 text-left font-semibold text-gray-600 text-xs uppercase">Name</th>
                     <th class="px-4 py-3.5 bg-gray-50 text-left font-semibold text-gray-600 text-xs uppercase">Position</th>
@@ -23,7 +23,7 @@
             <tbody id="committeeTableBody">
                 @forelse($members as $idx => $c)
                 <tr class="border-t border-gray-100 hover:bg-primary-50/50" data-id="{{ $c->id }}">
-                    <td class="px-4 py-3.5 text-gray-400 text-sm">{{ $idx + 1 }}</td>
+                    <td class="px-4 py-3.5 text-gray-400 text-sm cursor-grab handle"><i class="fas fa-grip-vertical"></i></td>
                     <td class="px-4 py-3.5"><img src="{{ $c->photo ? asset('storage/'.$c->photo) : 'https://ui-avatars.com/api/?name='.urlencode($c->name).'&background=16a34a&color=fff&size=40' }}" class="w-10 h-10 rounded-full object-cover"></td>
                     <td class="px-4 py-3.5 font-medium">{{ $c->name }}</td>
                     <td class="px-4 py-3.5 text-gray-500">{{ $c->position }}</td>
@@ -38,7 +38,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="5" class="text-center py-12 text-gray-400"><i class="fas fa-user-tie text-3xl mb-2"></i><p>No committee members yet</p></td></tr>
+                <tr><td colspan="6" class="text-center py-12 text-gray-400"><i class="fas fa-user-tie text-3xl mb-2"></i><p>No committee members yet</p></td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -124,5 +124,23 @@ document.getElementById('cPhoto')?.addEventListener('change', function () {
     const file = this.files && this.files[0];
     setCommitteePhotoPreview(file ? URL.createObjectURL(file) : '');
 });
+
+(function() {
+    const el = document.getElementById('committeeTableBody');
+    if (!el) return;
+    Sortable.create(el, {
+        handle: '.handle',
+        animation: 150,
+        onEnd: function() {
+            const ids = [];
+            el.querySelectorAll('tr').forEach(tr => { if (tr.dataset.id) ids.push(Number(tr.dataset.id)); });
+            fetch('{{ route("admin.committee.reorder") }}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                body: JSON.stringify({ ids })
+            });
+        }
+    });
+})();
 </script>
 @endpush

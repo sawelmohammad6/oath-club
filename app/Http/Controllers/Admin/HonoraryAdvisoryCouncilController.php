@@ -10,8 +10,9 @@ class HonoraryAdvisoryCouncilController extends Controller
 {
     public function index()
     {
-        $members = HonoraryAdvisoryCouncilMember::orderBy('created_at', 'asc')
-            ->orderBy('id', 'asc')
+        $members = HonoraryAdvisoryCouncilMember::withoutGlobalScope('order')
+            ->orderBy('sort_order')
+            ->orderBy('id')
             ->paginate(20);
 
         return view('admin.honorary-advisory-council.index', compact('members'));
@@ -29,6 +30,7 @@ class HonoraryAdvisoryCouncilController extends Controller
             $data['photo'] = $request->file('photo')->store('honorary-advisory-council', 'public');
         }
 
+        $data['sort_order'] = HonoraryAdvisoryCouncilMember::max('sort_order') + 1;
         HonoraryAdvisoryCouncilMember::create($data);
         return redirect()->route('admin.honorary-advisory-council')->with('success', 'Honorary advisory council member added.');
     }
@@ -49,6 +51,15 @@ class HonoraryAdvisoryCouncilController extends Controller
 
         $member->update($data);
         return redirect()->route('admin.honorary-advisory-council')->with('success', 'Honorary advisory council member updated.');
+    }
+
+    public function reorder(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        foreach ($ids as $i => $id) {
+            HonoraryAdvisoryCouncilMember::where('id', $id)->update(['sort_order' => $i]);
+        }
+        return response()->json(['success' => true]);
     }
 
     public function destroy($id)

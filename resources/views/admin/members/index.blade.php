@@ -13,6 +13,7 @@
         <table class="admin-table">
             <thead>
                 <tr>
+                    <th style="width: 40px;"></th>
                     <th style="width: 80px;">Photo</th>
                     <th style="min-width: 250px;">Name</th>
                     <th>ID</th>
@@ -22,9 +23,10 @@
                     <th class="text-center" style="width: 140px;">Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="membersTableBody">
                 @forelse($members as $m)
-                <tr>
+                <tr data-id="{{ $m->id }}">
+                    <td class="text-gray-400 text-sm cursor-grab handle"><i class="fas fa-grip-vertical"></i></td>
                     <td><img src="{{ $m->photo ? asset('storage/'.$m->photo) : 'https://ui-avatars.com/api/?name='.urlencode($m->name ?: ($m->application->full_name ?? 'Member')).'&background=16a34a&color=fff&size=40' }}" class="w-10 h-10 rounded-full object-cover border border-gray-200"></td>
                     <td class="font-medium">{{ $m->name ?: ($m->application->full_name ?? '') }}</td>
                     <td class="text-gray-500 font-mono text-sm">{{ $m->member_id }}</td>
@@ -42,7 +44,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="7" class="text-center py-12 text-gray-400"><i class="fas fa-users text-3xl mb-2"></i><p>No members yet</p></td></tr>
+                <tr><td colspan="8" class="text-center py-12 text-gray-400"><i class="fas fa-users text-3xl mb-2"></i><p>No members yet</p></td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -156,5 +158,23 @@ document.getElementById('mPhoto')?.addEventListener('change', function () {
     const file = this.files && this.files[0];
     setMemberPhotoPreview(file ? URL.createObjectURL(file) : '');
 });
+
+(function() {
+    const el = document.getElementById('membersTableBody');
+    if (!el) return;
+    Sortable.create(el, {
+        handle: '.handle',
+        animation: 150,
+        onEnd: function() {
+            const ids = [];
+            el.querySelectorAll('tr').forEach(tr => { if (tr.dataset.id) ids.push(Number(tr.dataset.id)); });
+            fetch('{{ route("admin.members.reorder") }}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                body: JSON.stringify({ ids })
+            });
+        }
+    });
+})();
 </script>
 @endpush
