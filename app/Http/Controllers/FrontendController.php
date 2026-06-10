@@ -24,7 +24,7 @@ class FrontendController extends Controller
         $honoraryAdvisoryCouncilMembers = HonoraryAdvisoryCouncilMember::get();
         $executiveAdvisoryCouncilMembers = ExecutiveAdvisoryCouncilMember::get();
         $committee = CommitteeMember::get();
-        $gallery = Gallery::paginate(20);
+        $gallery = Gallery::latest()->paginate(20);
         $activities = Activity::get();
         $settings = WebsiteSetting::getAllAsArray();
         $managedBanners = Banner::where('is_active', true)

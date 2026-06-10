@@ -13,8 +13,7 @@ class GalleryController extends Controller
     public function index()
     {
         $images = Gallery::withoutGlobalScope('sort_order')
-            ->orderBy('sort_order')
-            ->orderBy('id')
+            ->latest()
             ->paginate(20);
         return view('admin.gallery.index', compact('images'));
     }
