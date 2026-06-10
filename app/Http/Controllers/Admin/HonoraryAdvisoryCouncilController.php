@@ -10,10 +10,10 @@ class HonoraryAdvisoryCouncilController extends Controller
 {
     public function index()
     {
-        $members = HonoraryAdvisoryCouncilMember::withoutGlobalScope('order')
+        $members = HonoraryAdvisoryCouncilMember::withoutGlobalScope('sort_order')
             ->orderBy('sort_order')
             ->orderBy('id')
-            ->paginate(20);
+            ->get();
 
         return view('admin.honorary-advisory-council.index', compact('members'));
     }
