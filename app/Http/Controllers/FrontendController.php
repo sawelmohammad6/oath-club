@@ -23,7 +23,7 @@ class FrontendController extends Controller
         $members = Member::get();
         $honoraryAdvisoryCouncilMembers = HonoraryAdvisoryCouncilMember::get();
         $executiveAdvisoryCouncilMembers = ExecutiveAdvisoryCouncilMember::get();
-        $committee = CommitteeMember::get();
+        $committee = CommitteeMember::orderBy('sort_order')->get();
         $gallery = Gallery::latest()->paginate(20);
         $activities = Activity::get();
         $settings = WebsiteSetting::getAllAsArray();

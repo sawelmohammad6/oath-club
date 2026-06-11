@@ -135,6 +135,10 @@ document.getElementById('cPhoto')?.addEventListener('change', function () {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
                 body: JSON.stringify({ ids })
+            }).then(function(r) {
+                if (!r.ok) console.error('Reorder failed:', r.statusText);
+            }).catch(function(e) {
+                console.error('Reorder request error:', e);
             });
         }
     });

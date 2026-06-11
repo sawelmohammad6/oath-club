@@ -5,15 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\CommitteeMember;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CommitteeController extends Controller
 {
     public function index()
     {
-        $members = CommitteeMember::withoutGlobalScope('sort_order')
-            ->orderBy('sort_order')
-            ->orderBy('id')
-            ->get();
+        $this->normalizeSortOrder();
+        $members = CommitteeMember::orderBy('sort_order')->get();
 
         return view('admin.committee.index', compact('members'));
     }
@@ -56,10 +55,33 @@ class CommitteeController extends Controller
     public function reorder(Request $request)
     {
         $ids = $request->input('ids', []);
-        foreach ($ids as $i => $id) {
-            CommitteeMember::where('id', $id)->update(['sort_order' => $i]);
+        if (empty($ids)) {
+            return response()->json(['success' => false, 'error' => 'No IDs provided'], 400);
         }
-        return response()->json(['success' => true]);
+        try {
+            DB::transaction(function () use ($ids) {
+                foreach ($ids as $i => $id) {
+                    CommitteeMember::where('id', $id)->update(['sort_order' => $i]);
+                }
+            });
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            \Log::error('Committee reorder failed: ' . $e->getMessage());
+            return response()->json(['success' => false, 'error' => 'Reorder failed'], 500);
+        }
+    }
+
+    private function normalizeSortOrder()
+    {
+        $members = CommitteeMember::orderBy('sort_order')->orderBy('id')->get();
+        $changed = false;
+        foreach ($members as $i => $member) {
+            if ($member->sort_order !== $i) {
+                CommitteeMember::where('id', $member->id)->update(['sort_order' => $i]);
+                $changed = true;
+            }
+        }
+        return $changed;
     }
 
     public function destroy($id)
