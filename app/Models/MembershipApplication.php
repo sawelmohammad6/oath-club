@@ -13,6 +13,7 @@ class MembershipApplication extends Model
     ];
 
     protected $casts = [
-        'status' => 'string'
+        'status' => 'string',
+        'date_of_birth' => 'date',
     ];
 }

@@ -51,7 +51,12 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5"><i class="fas fa-lock text-gray-400 mr-1.5"></i>Password</label>
-                    <input type="password" name="password" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition text-gray-800" placeholder="Enter password">
+                    <div class="relative">
+                        <input type="password" name="password" id="loginPassword" required class="w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition text-gray-800" placeholder="Enter password">
+                        <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none" tabindex="-1">
+                            <i class="fas fa-eye-slash" id="togglePasswordIcon"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="flex items-center gap-2 text-sm text-gray-600">
                     <input type="checkbox" name="remember" id="remember" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
@@ -68,5 +73,19 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var btn = document.getElementById('togglePassword');
+        var input = document.getElementById('loginPassword');
+        var icon = document.getElementById('togglePasswordIcon');
+        if (btn && input && icon) {
+            btn.addEventListener('click', function() {
+                var isPassword = input.type === 'password';
+                input.type = isPassword ? 'text' : 'password';
+                icon.className = isPassword ? 'fas fa-eye' : 'fas fa-eye-slash';
+            });
+        }
+    });
+    </script>
 </body>
 </html>
